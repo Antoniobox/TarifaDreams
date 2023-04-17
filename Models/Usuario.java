@@ -13,6 +13,9 @@ public class Usuario {
     private String email;
     private boolean rol;
 
+    //TODO Preguntar si un cliente debe de tener un usuario si o si o si este se puede agregar más tarde
+    Usuario(){}
+
     public Usuario(String nombreUsuario, String password, String email, boolean rol) {
         this.nombreUsuario = nombreUsuario;
         this.password = password;

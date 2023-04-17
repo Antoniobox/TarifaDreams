@@ -4,7 +4,7 @@ package Models;
  * @version 1.0
  * @since 18/02/2023
  */
-public class Cliente {
+public class Cliente extends Usuario{
 	private String nombre;
 	private String apellidos;
 	private String email;

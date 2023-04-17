@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -6,9 +5,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Controllers.GestorClientes;
-import Models.Cliente;
-import Models.Habitacion;
-import Models.Reservas;
+import Models.*;
 import Utils.Validaciones;
 
 public class Main {
