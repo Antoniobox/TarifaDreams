@@ -110,4 +110,18 @@ public class Cliente {
 		System.out.println("Email: "+email);
 		System.out.println("DNI: "+dni);
 	}
+
+	/**
+	 * Compara dos clientes en base a los atributos codigoAcceso e Email
+	 * @param obj Cliente a comparar
+	 * @return Clientes idénticos
+	 */
+	@Override
+	public boolean equals(Object obj){
+		if(obj.getClass() != this.getClass() || obj == null){
+			return false;
+		}
+		Cliente cliente = (Cliente) obj;
+		return cliente.getEmail().equals(this.getEmail()) && cliente.getCodigoAcceso().equals(this.getCodigoAcceso());
+	}
 }
