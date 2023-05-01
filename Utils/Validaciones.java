@@ -1,4 +1,7 @@
 package Utils;
+import Exceptions.InvalidFormatNumberException;
+import Exceptions.NumberNotAllowedException;
+
 import java.util.Calendar;
 
 /**
@@ -142,36 +145,22 @@ public class Validaciones {
 	 * @param telefono
 	 * @return telefono válido
 	 */
-	public static boolean telefono(String telefono){
+	public static void telefono(String telefono) throws InvalidFormatNumberException, NumberNotAllowedException{
 		//Eliminamos cualquier tipo de espacio existente
 		telefono = telefono.replaceAll("\\s", "");
-		boolean fijo = false, movil = false;
-		if(telefono.length()!=9){
-			System.out.println("Máximo 9 caracteres");
-			return false;
-		}
-		for(int i = 0; i < telefono.length(); i++){
-			if(telefono.charAt(i) < '0' || telefono.charAt(i) > '9') {
-				System.out.println("No todo son números Mari Carmen");
-				return false;
-			}
-		}
 
-		//Se debe de comprobar que el teléfono no está vacío
-		if(estaVacio(telefono)){
-			System.out.println("No se puede dejar en blanco el teléfono");
-			return false;
+		if(telefono != null && telefono.length()==9){
+			for(int i=0; i<telefono.length(); i++){
+				if(telefono.charAt(i) < '0' ||telefono.charAt(i) > '9'){
+					throw new InvalidFormatNumberException("No se aceptan esos caracteres");
+				}
+			}
+		}else{
+			throw new InvalidFormatNumberException("String incompleto");
 		}
-		if(telefono.charAt(0) == '9' || telefono.charAt(0) == '8'){
-			movil = true;
+		if(!(telefono.charAt(0) == '9' || telefono.charAt(0) == '8' || telefono.charAt(0) == '6' || telefono.charAt(0) == '7')) {
+			throw new NumberNotAllowedException("No se acepta ese número de teléfono");
 		}
-		else if(telefono.charAt(0) == '6' || telefono.charAt(0) == '7'){
-			fijo = true;
-		}
-		else{
-			System.out.println("No se acepta este numero");
-		}
-		return movil || fijo;
 	}
 
 	/**
