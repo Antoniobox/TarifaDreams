@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Controllers.GestorClientes;
+import Exceptions.InvalidFormatNumberException;
+import Exceptions.NumberNotAllowedException;
 import Models.*;
 import Utils.Validaciones;
 
@@ -37,10 +39,20 @@ public class Main {
 				System.out.println("Introduce el email");
 				email=sc.nextLine();
 			}while(!Validaciones.email(email));
-			do {
-				System.out.println("Introduce el numero de telefono");
-				telefono=sc.nextLine();
-			}while(!Validaciones.telefono(telefono));
+			do{
+				System.out.println("Introduce el número de telefono");
+				telefono = sc.nextLine();
+				try{
+					Validaciones.telefono(telefono);
+				}catch (InvalidFormatNumberException ifne){
+					ifne.printStackTrace();
+					telefono = "";
+				}catch (NumberNotAllowedException nna){
+					nna.printStackTrace();
+					telefono = "";
+				}
+			}while(telefono.equals(""));
+
 			do {
 				System.out.println("Introduce la fecha de nacimiento");
 				fechaNacimiento=sc.nextLine();
@@ -111,12 +123,10 @@ public class Main {
 					if(!Validaciones.esUnNumero(personasReserva, true)){
 						System.out.println("Introduce un número, por favor");
 						todoCorrecto = false;
-					}
-					else if(personasReserva.length() > 2){
+					} else if(personasReserva.length() > 2){
 						System.out.println("No se permite ese número de personas, máximo 99 por reserva");
 						todoCorrecto = false;
-					}
-					else if(Integer.parseInt(personasReserva)<=0){
+					} else if(Integer.parseInt(personasReserva)<=0){
 						System.out.println("La reserva debe de hacerse para un número de personas mayor");
 						todoCorrecto=false;
 					}
@@ -189,14 +199,12 @@ public class Main {
 								if(opcion_==Integer.parseInt(opcionHabitacion)){
 									System.out.println("Habitaciones a la espera del pago...");
 									habitacionCorrecta = true;
-								}
-								else{
+								} else{
 									habitacionCorrecta = false;
 								}
 							}
 							opcionHabitacion = habitacionCorrecta ? opcionHabitacion : "ERROR";
-						}
-						else{
+						} else{
 							opcionHabitacion="ERROR";
 						}
 					}while(opcionHabitacion.equals("ERROR"));
@@ -220,20 +228,16 @@ public class Main {
 						if(tarjetaCredito.substring(0, 6).equals(visa)){
 							System.out.println("Tienes una VISA");
 							pagoRealizado=true;
-						}
-						else if(tarjetaCredito.substring(0, 6).equals(americanExpress)){
+						} else if(tarjetaCredito.substring(0, 6).equals(americanExpress)){
 							System.out.println("Tienes una American Express");
 							pagoRealizado=true;
-						}
-						else if(tarjetaCredito.substring(0, 6).equals(masterCard)){
+						} else if(tarjetaCredito.substring(0, 6).equals(masterCard)){
 							System.out.println("Tienes una MasterCard");
 							pagoRealizado=true;
-						}
-						else{
+						} else{
 							System.out.println("No se ha detectado el tipo de tu tarjeta de crédito");
 						}
-					}
-					else if(metodoPago.equals("2")){
+					} else if(metodoPago.equals("2")){
 						String bizum = "";
 						System.out.println("Bizum");
 						System.out.println("Introduce tu número de teléfono");
@@ -264,8 +268,7 @@ public class Main {
 					}
 					System.out.println("Precio total: "+(precioTotalReserva+precioTotalReserva*0.21));
 				}
-			}
-			else if(opcionHabitacion.equals("2")){
+			} else if(opcionHabitacion.equals("2")){
 				ArrayList<String> preguntasFrecuentes = new ArrayList<>();
 				ArrayList<String> respuestas = new ArrayList<>();
 				String respuesta;
@@ -282,8 +285,7 @@ public class Main {
 				respuesta = sc.nextLine();
 				if(Validaciones.esUnNumero(respuesta, false) && !respuesta.equals("0")){
 					System.out.println(respuestas.get(Integer.parseInt(respuesta)-1));
-				}
-				else if(respuesta.equals("0")) System.out.println("Saliendo");
+				} else if(respuesta.equals("0")) System.out.println("Saliendo");
 			}
 		}
 	}
