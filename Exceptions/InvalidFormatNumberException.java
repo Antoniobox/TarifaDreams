@@ -2,12 +2,12 @@ package Exceptions;
 
 /**
  * InvalidFormatNumberException class
- * Call this exception for phone numbers format that may be wrong
+ * Excepcion para cuando el formato del número de teléfono es incorrecto
  */
 public class InvalidFormatNumberException extends Exception{
     String mensaje;
 
-    InvalidFormatNumberException(String mensaje){
+    public InvalidFormatNumberException(String mensaje){
         this.mensaje = mensaje;
     }
 
