@@ -97,6 +97,20 @@ public class Habitacion {
 		this.fechasOcupadas+=",";
 	}
 
+	@Override
+	public String toString() {
+		return "Habitacion{" +
+				"id=" + id +
+				", nombre='" + nombre + '\'' +
+				", descripcion='" + descripcion + '\'' +
+				", num_camas=" + num_camas +
+				", max_personas=" + max_personas +
+				", ocupada=" + ocupada +
+				", fechasOcupadas='" + fechasOcupadas + '\'' +
+				", precio=" + precio +
+				'}';
+	}
+
 	/**
 	 *
 	 */
