@@ -1,6 +1,5 @@
 package Utils;
-import Exceptions.InvalidFormatNumberException;
-import Exceptions.NumberNotAllowedException;
+import Exceptions.*;
 
 import java.util.Calendar;
 
@@ -53,13 +52,12 @@ public class Validaciones {
 	 * @param sonApellidos
 	 * @return nombre o apellidos válidos
 	 */
-	public static boolean nombreYApellidos(String frase, boolean sonApellidos){
+	public static void nombreYApellidos(String frase, boolean sonApellidos) throws InvalidCharacterInNameException, EmptyStringException{
 		frase = frase.trim();
 		frase = frase.toUpperCase();
 		int contadorEspacios = 0;
 		if(estaVacio(frase)){
-			System.out.println("No se puede dejar vacio");
-			return false;
+			throw new EmptyStringException("Error: no se puede dejar vacío");
 		}
 		for(int i = 0; i < frase.length(); i++){
 			if(frase.charAt(i) < 'Á' || frase.charAt(i) > 'Ú'){
@@ -69,18 +67,15 @@ public class Validaciones {
 							contadorEspacios+=1;
 						}
 						else{
-							if(sonApellidos)
-								System.out.println("Cuidado con el apellido");
-							else
-								System.out.println("Cuidado con el nombre");
-							return false;
+							throw new InvalidCharacterInNameException(sonApellidos ? "Caracteres inválidos en apellidos" : "Caracteres inválidos en nombre");
 						}
 					}
 				}
 			}
 		}
-		//Aunque se acepten espacios, no pueden estar compuestos el string solo de espacios
-		return contadorEspacios!=frase.length();
+		if(contadorEspacios==frase.length()){
+			throw new InvalidCharacterInNameException("No se pueden dejar espacios en blanco únicamente");
+		}
 	}
 	/**
 	 * Comprueba que el email es válido siguiendo las siguientes comprobaciones:
@@ -93,12 +88,12 @@ public class Validaciones {
 	 * @param email
 	 * @return email válido
 	 */
-	public static boolean email(String email){
+	public static void email(String email) throws EmptyStringException, InvalidEmailFormatException{
+		String mensajeEmailInvalido = "No se acepta el formato de correo";
 		email = email.trim();
 		for(int i = 0; i < email.length(); i++){
 			if(email.charAt(i)==' ') {
-				System.out.println("No pueden existir espacios en el correo");
-				return false;
+				throw new EmptyStringException("No se pueden dejar espacios en el email");
 			}
 		}
 		int contA = 0;
@@ -109,39 +104,32 @@ public class Validaciones {
 		}
 		//El email no se puede dejar en blanco
 		if(estaVacio(email)){
-			System.out.println("No se puede dejar vacío el email");
-			return false;
+			throw new EmptyStringException("No se puede dejar vacio el email");
 		}
 		//Debe de haber únicamente un @ en el correo para ser válido
 		if(contA != 1){
-			System.out.println("El correo requiere de un '@' antes del dominio para ser válido");
-			return false;
+			throw new InvalidEmailFormatException(mensajeEmailInvalido);
 		}
 		int posPunto;
 		int pos_a = email.indexOf('@');
 		//El arroba no puede estar al final del string u ocupar menos de 3 espacios (Recordemos que hay que comprobar las extensiones)
 		if(pos_a==0 || pos_a==-1){
-			System.out.println("No se acepta ese formato de correo");
-			return false;
+			throw new InvalidEmailFormatException(mensajeEmailInvalido);
 		}
 		String subEmail = email.substring(pos_a);
 		//Vemos si hay un punto en algun sitio despues del @
 		if(subEmail.indexOf('.')==-1){
-			System.out.println("El correo lo has escrito un poquiiiiito mal");
-			return false;
+			throw new InvalidEmailFormatException(mensajeEmailInvalido);
 		}
 		if(email.charAt(pos_a+1)=='.'){
-			System.out.println("Invalido");
-			return false;
+			throw new InvalidEmailFormatException(mensajeEmailInvalido);
 		}
 		posPunto = subEmail.indexOf('.');
 		String extension = subEmail.substring(posPunto+1);
 		//Extensiones admitidas (com, es, org, online)
 		if(!(extension.equals("com") || extension.equals("es") || extension.equals("org") || extension.equals("online"))){
-			System.out.println("Extension invalida");
-			return false;
+			throw new InvalidEmailFormatException("Extension inválida del correo electrónico");
 		}
-		return true;
 	}
 
 	/**
