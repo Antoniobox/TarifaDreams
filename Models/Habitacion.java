@@ -1,5 +1,4 @@
 package Models;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -99,6 +98,14 @@ public class Habitacion {
 				", fechasOcupadas='" + fechasOcupadas + '\'' +
 				", precio=" + precio +
 				'}';
+	}
+
+	/**
+	 * Devuelve un String que contiene todos los atributos del objeto separados por ;
+	 * @return String con los atributos separados por ;
+	 */
+	public String formatearObjeto(){
+		return id + ";"+ nombre + ";" + descripcion + ";" + num_camas + ";" + max_personas + ";" + precio;
 	}
 
 	/**

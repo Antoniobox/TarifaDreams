@@ -1,5 +1,6 @@
 package Controllers;
 
+import Exceptions.EmptyArrayListHabitacionesException;
 import Exceptions.InvalidFieldsHabitacion;
 import Models.Habitacion;
 
@@ -23,18 +24,17 @@ public class GestorHabitaciones {
         this.habitaciones = habitaciones;
     }
 
-    //TODO reformular el bloque try-catch
-    public GestorHabitaciones(ArrayList<Habitacion> habitaciones, boolean cargarBD){
+    /**
+     * Constructor para cargar la base de datos en el arraylist de habitaciones que se le pasa como parametro
+     * @param habitaciones
+     * @param cargarBD
+     * @throws IOException
+     * @throws InvalidFieldsHabitacion
+     */
+    public GestorHabitaciones(ArrayList<Habitacion> habitaciones, boolean cargarBD) throws IOException, InvalidFieldsHabitacion{
         this.habitaciones = habitaciones;
-        try{
-            cargarBaseDeDatos();
-        }catch(FileNotFoundException fnfe){
-            System.out.println("No se encuentra el fichero de la base de datos de habitacion");
-        }catch(IOException ioe){
-            ioe.printStackTrace();
-        }catch(InvalidFieldsHabitacion ifh){
-            ifh.printStackTrace();
-        }
+        cargarBaseDeDatos();
+        //TODO pensar si se debería de guardar los registros antes de cargarlos
     }
     public ArrayList<Habitacion> getHabitaciones() {
         return habitaciones;
@@ -66,7 +66,7 @@ public class GestorHabitaciones {
      * @throws IOException
      * @throws InvalidFieldsHabitacion
      */
-    private void cargarBaseDeDatos() throws FileNotFoundException, IOException, InvalidFieldsHabitacion {
+    private void cargarBaseDeDatos() throws IOException, InvalidFieldsHabitacion {
         FileReader fr = new FileReader("Data/habitaciones");
         BufferedReader br = new BufferedReader(fr);
 
@@ -92,12 +92,20 @@ public class GestorHabitaciones {
         }
     }
 
-    public void guardarRegistros() throws IOException{
-        FileWriter fw = new FileWriter("Data/habitaciones.dat");
+    /**
+     * Almacena el contenido del arraylist de habitaciones en la BD
+     * @throws IOException
+     * @throws EmptyArrayListHabitacionesException
+     */
+    public void guardarRegistros() throws IOException, EmptyArrayListHabitacionesException{
+        FileWriter fw = new FileWriter("Data/habitaciones.dat", false);
         if(habitaciones.size() > 0){
             for(Habitacion h : habitaciones){
-                //TODO pensar si comprobar si las habitaciones deben de tener todos los campos con algun valor para escribirlas
+                fw.write(h.formatearObjeto());
             }
+        } else{
+            throw new EmptyArrayListHabitacionesException("No se puede guardar el listado de habitaciones (no existen habitaciones)");
         }
+        fw.close();
     }
 }
