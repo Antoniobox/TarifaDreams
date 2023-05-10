@@ -31,9 +31,6 @@ public class Main {
 				nombre=sc.nextLine();
 				try{
 					Validaciones.nombreYApellidos(nombre, false);
-				}catch(InvalidCharacterInNameException | EmptyStringException e){
-					System.out.println(e.getMessage());
-					continue;
 				}catch(Exception e){
 					System.out.println(e.getMessage());
 					continue;
@@ -45,9 +42,6 @@ public class Main {
 				apellidos=sc.nextLine();
 				try{
 					Validaciones.nombreYApellidos(apellidos, true);
-				}catch(InvalidCharacterInNameException | EmptyStringException e){
-					System.out.println(e.getMessage());
-					continue;
 				}catch(Exception e){
 					System.out.println(e.getMessage());
 					continue;
@@ -59,7 +53,7 @@ public class Main {
 				email=sc.nextLine();
 				try{
 					Validaciones.email(email);
-				}catch(InvalidEmailFormatException | EmptyStringException e){
+				}catch(Exception e){
 					System.out.println(e.getMessage());
 					continue;
 				}
@@ -80,6 +74,7 @@ public class Main {
 				break;
 			}while(true);
 
+			//TODO continuar reformateando las validaciones para el uso de excepciones
 			do {
 				System.out.println("Introduce la fecha de nacimiento");
 				fechaNacimiento=sc.nextLine();
