@@ -168,96 +168,75 @@ public class Validaciones {
 	 * @param date
 	 * @return fecha válida
 	 */
-	public static boolean fecha(String date, boolean validarSintaxis){
+
+	//TODO continuar reestructurando las validaciones para su posterior uso con excepciones
+	public static void fecha(String date, boolean validarSintaxis) throws InvalidDateFormatException, AgeOfUserNotAllowedException{
 		int mes, anyo, dias;
+		int anyoActual = Calendar.getInstance().get(Calendar.YEAR);
 		boolean bisiesto = false;
 		date = date.trim();
 		if(date.length()!=10){
-			System.out.println("Longitud no permitida");
-			return false;
+			throw new InvalidDateFormatException("Longitud no permitida");
 		}
 		if((date.charAt(2)!='/' || date.charAt(5)!='/') && (date.charAt(2)!='-' || date.charAt(5)!='-')) {
-			System.out.println("FORMATO INVALIDO");
-			return false;
+			throw new InvalidDateFormatException("FORMATO INVALIDO");
 		}
-		for(int i = 0; i < 2; i++){
-			if(date.charAt(i) < '0' || date.charAt(i) > '9' ){
-				System.out.println("No hay numeros");
-				return false;
+
+		//Comprueba que los dias, meses y años se encuentran en formato numérico
+		for(int i = 0; i < 10; i++){
+			if(i!=2 && i!=5){
+				if(date.charAt(i) < '0' || date.charAt(i) > '9' ){
+					throw new InvalidDateFormatException("Formato de la fecha incorrecto (solo se permiten números)");
+				}
 			}
 		}
 		dias = Integer.parseInt(date.substring(0, 2));
-		for(int i = 3; i < 5; i++){
-			if(date.charAt(i) < '0' || date.charAt(i) > '9' ){
-				System.out.println("No hay numeros");
-				return false;
-			}
-		}
-
 		mes = Integer.parseInt(date.substring(3, 5));
-		for(int i = 6; i < 10; i++){
-			if(date.charAt(i) < '0' || date.charAt(i) > '9' ){
-				System.out.println("No hay numeros");
-				return false;
-			}
-		}
 		anyo = Integer.parseInt(date.substring(6, 10));
 
 		if((anyo%4==0 && anyo%100!=0) || anyo%400==0)
 			bisiesto = true;
 		if(mes==1 || mes==3 || mes==5 || mes==7 || mes==8 || mes==10 || mes==12){
 			if(dias > 31 || dias <= 0){
-				System.out.println("Error con los dias");
-				return false;
+				throw new InvalidDateFormatException("Error con los dias");
 			}
 		}
 		else if(mes==4||mes==6||mes==9||mes==11){
 			if(dias>30 || dias <= 0){
-				System.out.println("Error con los dias");
-				return false;
+				throw new InvalidDateFormatException("Error con los meses");
 			}
 		}
 		else if(mes==2) {
 			if (bisiesto) {
 				if (dias > 29 || dias <= 0) {
-					System.out.println("Te has pasado los dias Illo");
-					return false;
+					throw new InvalidDateFormatException("Has superado el número de días permitido (febrero no tiene más de 29)");
 				}
 			} else {
 				if (dias > 28 || dias <= 0) {
-					System.out.println("Error con los dias");
-					return false;
+					throw new InvalidDateFormatException("Has superado el número de días permitido (febrero no tiene más de 28)");
 				}
 			}
 		}
 		//Rango de años permitidos
 		if(!validarSintaxis){
-			// Año actual
-			int anyoActual = Calendar.getInstance().get(Calendar.YEAR);
 			if(anyo<1950 ||anyo>anyoActual){
-				System.out.println("No se acepta ese año");
-				return false;
+				throw new InvalidDateFormatException("Año no permitido");
 			}
 			if(anyoActual-anyo < 18){
-				System.out.println("Eres menor de edad");
-				return false;
+				throw new AgeOfUserNotAllowedException("Usuario menor de edad, denegado el permiso para registrarse");
 			}
 		}
 		else{
-			if(anyo<2023){
-				System.out.println("No se acepta una fecha anterior");
-				return false;
+			if(anyo<anyoActual){
+				throw new InvalidDateFormatException("Año inferior al año actual");
 			}
 		}
 		if(mes < 0 || mes > 12){
-			System.out.println("No se aceptan esos meses");
-			return false;
+			throw new InvalidDateFormatException("El mes debe de ser del 1-12");
 		}
 		if(!(dias>0 && mes>0)){
-			System.out.println("Los valores deben de ser mal altos de 0");
-			return false;
+			throw new InvalidDateFormatException("No se acepta el valor 0");
 		}
-		return true;
 	}
 
 	/**
