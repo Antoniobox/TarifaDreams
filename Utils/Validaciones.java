@@ -15,8 +15,16 @@ import java.util.Calendar;
  * @version 1.0
  */
 public class Validaciones {
+
+	/**
+	 * Método que comprueba en base a un String que el contenido es un número
+	 * @param numero String a comprobar que es un número
+	 * @param varios poner true en caso de que el String deban ser varios números, false en caso de que solo sea uno
+	 * @return es un número
+	 */
 	public static boolean esUnNumero(String numero, boolean varios){
-		if(!varios) return !(numero.charAt(0)<'0' || numero.charAt(0)>'9');
+		if(!varios) 
+			return !(numero.charAt(0)<'0' || numero.charAt(0)>'9') && numero.length()==1;
 		else{
 			for(int i=0; i<numero.length();i++){
 				if(numero.charAt(i) < '0' || numero.charAt(i) > '9') return false;
