@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Controllers.GestorClientes;
+import Exceptions.InvalidFormatNumberException;
+import Exceptions.NumberNotAllowedException;
 import Models.*;
 import Utils.Validaciones;
 
@@ -37,10 +39,21 @@ public class Main {
 				System.out.println("Introduce el email");
 				email=sc.nextLine();
 			}while(!Validaciones.email(email));
+
 			do {
 				System.out.println("Introduce el numero de telefono");
 				telefono=sc.nextLine();
-			}while(!Validaciones.telefono(telefono));
+				try{
+					Validaciones.telefono(telefono);
+				}catch(InvalidFormatNumberException | NumberNotAllowedException e){
+					e.getMessage();
+					continue;
+				}catch(Exception e){
+					System.out.println("Se ha detectado un error, vuelve a introducir el número");
+				}
+				break;
+			}while(true);
+
 			do {
 				System.out.println("Introduce la fecha de nacimiento");
 				fechaNacimiento=sc.nextLine();
@@ -238,12 +251,12 @@ public class Main {
 						System.out.println("Bizum");
 						System.out.println("Introduce tu número de teléfono");
 						bizum = sc.nextLine();
-						if(Validaciones.telefono(bizum)){
+						/*if(Validaciones.telefono(bizum)){
 							System.out.println("Pago realizado");
 							pagoRealizado=true;
 						}else{
 							System.out.println("Número inválida");
-						}
+						}*/
 					}
 				}
 				if(pagoRealizado){
