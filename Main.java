@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import Controllers.GestorClientes;
-import Exceptions.InvalidFormatNumberException;
-import Exceptions.NumberNotAllowedException;
+import Exceptions.*;
 import Models.*;
 import Utils.Validaciones;
 
@@ -30,15 +29,42 @@ public class Main {
 			do {
 				System.out.println("Introduce tu nombre:");
 				nombre=sc.nextLine();
-			}while(!Validaciones.nombreYApellidos(nombre, false));
+				try{
+					Validaciones.nombreYApellidos(nombre, false);
+				}catch(InvalidCharacterInNameException | EmptyStringException e){
+					System.out.println(e.getMessage());
+					continue;
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+					continue;
+				}
+				break;
+			}while(true);
 			do {
 				System.out.println("Introduce tus apellidos");
 				apellidos=sc.nextLine();
-			}while(!Validaciones.nombreYApellidos(apellidos, true));
+				try{
+					Validaciones.nombreYApellidos(apellidos, true);
+				}catch(InvalidCharacterInNameException | EmptyStringException e){
+					System.out.println(e.getMessage());
+					continue;
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+					continue;
+				}
+				break;
+			}while(true);
 			do {
 				System.out.println("Introduce el email");
 				email=sc.nextLine();
-			}while(!Validaciones.email(email));
+				try{
+					Validaciones.email(email);
+				}catch(InvalidEmailFormatException | EmptyStringException e){
+					System.out.println(e.getMessage());
+					continue;
+				}
+				break;
+			}while(true);
 
 			do {
 				System.out.println("Introduce el numero de telefono");
