@@ -19,6 +19,7 @@ public class Main {
 		GestorClientes gc = new GestorClientes();
 		gc.generarClientesBase();
 		System.out.println("Bienvenido a Antonio DREAMS");
+		//TODO trasladar los menús a métodos en sus clases respectivas
 		do {
 			System.out.println("Selecciones una de las siguientes opciones\n" +
 					"1. Registrar un usuario\n"+
@@ -74,23 +75,46 @@ public class Main {
 				break;
 			}while(true);
 
-			//TODO continuar reformateando las validaciones para el uso de excepciones
 			do {
 				System.out.println("Introduce la fecha de nacimiento");
 				fechaNacimiento=sc.nextLine();
-			}while(!Validaciones.fecha(fechaNacimiento, false));
+				try{
+					Validaciones.fecha(fechaNacimiento, false);
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+					continue;
+				}
+				break;
+			}while(true);
 			do{
 				System.out.println("Introduce tu dni");
 				dni=sc.nextLine();
-			}while(!Validaciones.dni(dni));
+				try{
+					Validaciones.dni(dni);
+				}catch(Exception e){
+					System.out.println(e.getMessage());
+					continue;
+				}
+				break;
+			}while(true);
+			String codigoSecreto;
 			do {
 				System.out.println("Introduce cuatro palabras separadas por espacios");
 				frase=sc.nextLine();
-			}while(Validaciones.control(frase).equals("ERROR"));
-			System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
-					"email: "+email+"\n" +
-					"Codigo Secreto: "+Validaciones.control(frase));
-			Cliente cliente__ = new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, Validaciones.control(frase));
+				try{
+					codigoSecreto = Validaciones.control(frase);
+				}catch (Exception e){
+					e.getMessage();
+					continue;
+				}
+				break;
+			}while(true);
+				System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
+						"email: "+email+"\n" +
+						"Codigo Secreto: "+codigoSecreto);
+
+
+			Cliente cliente__ = new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto);
 			gc.agregarCliente(cliente__);
 			System.out.println("¿Deseas iniciar sesión?(S/N): ");
 			opcion=sc.nextLine();
@@ -155,13 +179,14 @@ public class Main {
 						todoCorrecto=false;
 					}
 				} while (!todoCorrecto);
-				do {
+				//TODO implementar el uso de try-catch
+				/*do {
 					System.out.println("¿Cuál es la fecha de entrada?");
 					fechaEntrada = sc.nextLine();
 					System.out.println("¿Cuál es la fecha de salida?");
 					fechaSalida = sc.nextLine();
 				} while (!Validaciones.fecha(fechaEntrada, true) || !Validaciones.fecha(fechaSalida, true));
-				int personasTotalReserva = Integer.parseInt(personasReserva);
+				*/int personasTotalReserva = Integer.parseInt(personasReserva);
 				int opcionHabitaciones = 0;
 				ArrayList<Habitacion> habitaciones = new ArrayList<>();
 				habitaciones.addAll(Habitacion.generarHabitacionesBase());

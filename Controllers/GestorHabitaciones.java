@@ -34,7 +34,6 @@ public class GestorHabitaciones {
     public GestorHabitaciones(ArrayList<Habitacion> habitaciones, boolean cargarBD) throws IOException, InvalidFieldsHabitacion{
         this.habitaciones = habitaciones;
         cargarBaseDeDatos();
-        //TODO pensar si se debería de guardar los registros antes de cargarlos
     }
     public ArrayList<Habitacion> getHabitaciones() {
         return habitaciones;

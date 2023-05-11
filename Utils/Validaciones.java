@@ -1,5 +1,6 @@
 package Utils;
 import Exceptions.*;
+import org.junit.Ignore;
 
 import java.util.Calendar;
 
@@ -52,6 +53,8 @@ public class Validaciones {
 	 * @param sonApellidos
 	 * @return nombre o apellidos válidos
 	 */
+
+
 	public static void nombreYApellidos(String frase, boolean sonApellidos) throws InvalidCharacterInNameException, EmptyStringException{
 		frase = frase.trim();
 		frase = frase.toUpperCase();
@@ -160,16 +163,17 @@ public class Validaciones {
 	}
 
 	/**
-	 * Comprueba que la fecha de nacimiento es correcta en base a los siguientes criterios
-	 * - El dia, el mes, y el año deben de o estar separados por '/' o por '-'.
-	 * - Debe de respetar los dias, meses y años del calendario gregoriano
-	 * - Deben de ser números
-	 * - La longitud de la fecha ha de ser de 10 caracteres
+	 *  Comprueba que la fecha de nacimiento es correcta en base a los siguientes criterios
+	 * 	- El dia, el mes, y el año deben de o estar separados por '/' o por '-'.
+	 * 	- Debe de respetar los dias, meses y años del calendario gregoriano
+	 * 	- Deben de ser números
+	 * 	- La longitud de la fecha ha de ser de 10 caracteres
 	 * @param date
-	 * @return fecha válida
+	 * @param validarSintaxis
+	 * @throws InvalidDateFormatException
+	 * @throws AgeOfUserNotAllowedException
 	 */
 
-	//TODO continuar reestructurando las validaciones para su posterior uso con excepciones
 	public static void fecha(String date, boolean validarSintaxis) throws InvalidDateFormatException, AgeOfUserNotAllowedException{
 		int mes, anyo, dias;
 		int anyoActual = Calendar.getInstance().get(Calendar.YEAR);
@@ -268,51 +272,28 @@ public class Validaciones {
 	 * @param dni
 	 * @return dni valido
 	 */
-	public static boolean dni(String dni){
+	public static void dni(String dni) throws InvalidDNIFormatException{
 		//la longitud de un DNI siempre es de 9 caracteres
 		if(dni.length()!=9){
-			System.out.println("longitud inválida");
-			return false;
+			throw new InvalidDNIFormatException("La longitud del DNI no es correcta");
 		}
 		//Comprueba que los 8 primeros digitos son numeros
 		for(int i=0; i<dni.length()-1;i++){
 			if(dni.charAt(i)<'0' ||dni.charAt(i)>'9'){
-				System.out.println("No se aceptan caracteres que no sean numeros");
-				return false;
+				throw new InvalidDNIFormatException("No se aceptan caracteres que no sean numeros");
 			}
 		}
 		//Se comprueba la letra del final
 		if(dni.charAt(dni.length()-1)<'A'|| dni.charAt(dni.length()-1)>'Z'){
-			System.out.println("Falta la letra final");
-			return false;
+			throw new InvalidDNIFormatException("No se ha encontrado la letra del DNI");
 		}
 		else{
 			int resultadoCalculo = Integer.parseInt(dni.substring(0, dni.length()-1))%23;
-			if(resultadoCalculo==0) return dni.charAt(dni.length()-1)=='T';
-			else if(resultadoCalculo==1) return dni.charAt(dni.length()-1)=='R';
-			else if(resultadoCalculo==2) return dni.charAt(dni.length()-1)=='W';
-			else if(resultadoCalculo==3) return dni.charAt(dni.length()-1)=='A';
-			else if(resultadoCalculo==4) return dni.charAt(dni.length()-1)=='G';
-			else if(resultadoCalculo==5) return dni.charAt(dni.length()-1)=='M';
-			else if(resultadoCalculo==6) return dni.charAt(dni.length()-1)=='Y';
-			else if(resultadoCalculo==7) return dni.charAt(dni.length()-1)=='F';
-			else if(resultadoCalculo==8) return dni.charAt(dni.length()-1)=='P';
-			else if(resultadoCalculo==9) return dni.charAt(dni.length()-1)=='D';
-			else if(resultadoCalculo==10) return dni.charAt(dni.length()-1)=='X';
-			else if(resultadoCalculo==11) return dni.charAt(dni.length()-1)=='B';
-			else if(resultadoCalculo==12) return dni.charAt(dni.length()-1)=='N';
-			else if(resultadoCalculo==13) return dni.charAt(dni.length()-1)=='J';
-			else if(resultadoCalculo==14) return dni.charAt(dni.length()-1)=='Z';
-			else if(resultadoCalculo==15) return dni.charAt(dni.length()-1)=='S';
-			else if(resultadoCalculo==16) return dni.charAt(dni.length()-1)=='Q';
-			else if(resultadoCalculo==17) return dni.charAt(dni.length()-1)=='V';
-			else if(resultadoCalculo==18) return dni.charAt(dni.length()-1)=='H';
-			else if(resultadoCalculo==19) return dni.charAt(dni.length()-1)=='L';
-			else if(resultadoCalculo==20) return dni.charAt(dni.length()-1)=='C';
-			else if(resultadoCalculo==21) return dni.charAt(dni.length()-1)=='K';
-			else if(resultadoCalculo==23) return dni.charAt(dni.length()-1)=='E';
+			String letras = "TRWAGMYFPDXBNJZSQVHLCKE";
+			if(!(dni.charAt(8)==letras.charAt(resultadoCalculo))){
+				throw new InvalidDNIFormatException("Letra incorrecta en el DNI");
+			}
 		}
-		return true;
 	}
 
 	/**
@@ -322,7 +303,10 @@ public class Validaciones {
 	 * @param frase
 	 * @return codigo
 	 */
-	public static String control(String frase){
+	public static String control(String frase) throws InvalidStringForControlException {
+		if(frase.length() < 8){
+
+		}
 		//Máximo tres espacios
 		int contadorEspacios = 0;
 		String mayusculas = "";
@@ -336,8 +320,7 @@ public class Validaciones {
 				contadorEspacios++;
 		}
 		if(contadorEspacios!=3){
-			System.out.println("NO PERMITIDO");
-			return "ERROR";
+			throw new InvalidStringForControlException("No se permite ese formato");
 		}
 		mayusculas+=frase.charAt(0);
 		for(int i = 0; i < frase.length(); i++){
