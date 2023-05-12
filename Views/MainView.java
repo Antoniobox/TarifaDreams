@@ -8,9 +8,9 @@ import java.util.Scanner;
  */
 public class MainView {
     //TODO pensar si se debería de hacer un método para cuando se requiere el retroceder hacia atras
-    //TODO pensar si poner opción para salir en el método menuInicio
+    //TODO pensar si poner aquí el método para iniciar sesión
     /**
-     * Método que muestra el menú principal. Tambien pide al usuario elegir entre la opción de registrarse o la de iniciar sesión
+     * Método que muestra el menú principal. También pide al usuario elegir entre la opción de registrarse o la de iniciar sesión
      * @return 1 en caso de querer registrarse. 2 en caso de querer iniciar sesión. 0 en caso de salir
      */
     public static int menuInicio(){
@@ -31,5 +31,14 @@ public class MainView {
         }while(opcion!=1 && opcion != 2 && opcion != 0);
         sc.close();
         return opcion;
+    }
+
+    public static boolean menuInicioSesion(){
+        Scanner sc = new Scanner(System.in);
+        String email, frase;
+        System.out.println("Introduce tu correo electronico");
+        email = sc.nextLine();
+        System.out.println("Introduce tu codigo secreto");
+        frase = sc.nextLine();
     }
 }
