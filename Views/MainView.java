@@ -1,5 +1,8 @@
 package Views;
 
+import Controllers.GestorClientes;
+import Models.Cliente;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -8,7 +11,7 @@ import java.util.Scanner;
  */
 public class MainView {
     //TODO pensar si se debería de hacer un método para cuando se requiere el retroceder hacia atras
-    //TODO pensar si poner aquí el método para iniciar sesión
+
     /**
      * Método que muestra el menú principal. También pide al usuario elegir entre la opción de registrarse o la de iniciar sesión
      * @return 1 en caso de querer registrarse. 2 en caso de querer iniciar sesión. 0 en caso de salir
@@ -33,12 +36,18 @@ public class MainView {
         return opcion;
     }
 
-    public static boolean menuInicioSesion(){
+    /**
+     * Menú para el inicio de sesión
+     * @param gc Gestor de clientes
+     * @return cliente en caso de que coincidan los parametros con algun registro, null en caso de que no encontrarlo
+     */
+    public static Cliente menuInicioSesion(GestorClientes gc){
         Scanner sc = new Scanner(System.in);
         String email, frase;
         System.out.println("Introduce tu correo electronico");
         email = sc.nextLine();
         System.out.println("Introduce tu codigo secreto");
         frase = sc.nextLine();
+        return gc.comprobarSiClienteExiste(email, frase);
     }
 }
