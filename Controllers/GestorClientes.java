@@ -31,6 +31,19 @@ public class GestorClientes {
 	}
 
 	/**
+	 * Comprueba en base al email y al codigo secreto de un cliente si existe en el listado.
+	 * @return cliente encontrado en caso de que coincidan en un registro, y devuelve null en caso de que no encuentre alguno
+	 */
+	public Cliente comprobarSiClienteExiste(String email, String codigo){
+		for(Cliente c : listadoClientes){
+			if(c.equals(email, codigo)){
+				return c;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Busca un cliente en el listado de los clientes
 	 * @param cliente_a_buscar
 	 * @return cliente encontrado en el listado
@@ -46,7 +59,9 @@ public class GestorClientes {
 	 * Añade un cliente al listado de clientes del gestor
 	 * @param cliente
 	 */
+	//TODO modificar método para comprobar antes de insertar el cliente que no existe en el listado
 	public void agregarCliente(Cliente cliente){
+
 		listadoClientes.add(cliente);
 	}
 
