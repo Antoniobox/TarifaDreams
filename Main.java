@@ -8,11 +8,12 @@ import Controllers.GestorClientes;
 import Exceptions.*;
 import Models.*;
 import Utils.Validaciones;
+import Views.MainView;
 
 public class Main {
 	public static void main(String[] args) {
 		String opcion="";
-		String nombre="", apellidos="", email="", telefono="", fechaNacimiento="",dni="",frase="";
+
 		Cliente cliente = new Cliente();
 		boolean usuarioLogueado=false;
 		Scanner sc = new Scanner(System.in);
@@ -20,112 +21,19 @@ public class Main {
 		gc.generarClientesBase();
 		System.out.println("Bienvenido a Antonio DREAMS");
 		//TODO trasladar los menús a métodos en sus clases respectivas
-		do {
-			System.out.println("Selecciones una de las siguientes opciones\n" +
-					"1. Registrar un usuario\n"+
-					"2. Iniciar Sesión");
-			opcion=sc.nextLine();
-		}while(!opcion.equals("1") && !opcion.equals("2"));
+		MainView.menuInicio();
 		if(opcion.equals("1")){
-			do {
-				System.out.println("Introduce tu nombre:");
-				nombre=sc.nextLine();
-				try{
-					Validaciones.nombreYApellidos(nombre, false);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-					continue;
-				}
-				break;
-			}while(true);
-			do {
-				System.out.println("Introduce tus apellidos");
-				apellidos=sc.nextLine();
-				try{
-					Validaciones.nombreYApellidos(apellidos, true);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-					continue;
-				}
-				break;
-			}while(true);
-			do {
-				System.out.println("Introduce el email");
-				email=sc.nextLine();
-				try{
-					Validaciones.email(email);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-					continue;
-				}
-				break;
-			}while(true);
-
-			do {
-				System.out.println("Introduce el numero de telefono");
-				telefono=sc.nextLine();
-				try{
-					Validaciones.telefono(telefono);
-				}catch(InvalidFormatNumberException | NumberNotAllowedException e){
-					e.getMessage();
-					continue;
-				}catch(Exception e){
-					System.out.println("Se ha detectado un error, vuelve a introducir el número");
-				}
-				break;
-			}while(true);
-
-			do {
-				System.out.println("Introduce la fecha de nacimiento");
-				fechaNacimiento=sc.nextLine();
-				try{
-					Validaciones.fecha(fechaNacimiento, false);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-					continue;
-				}
-				break;
-			}while(true);
-			do{
-				System.out.println("Introduce tu dni");
-				dni=sc.nextLine();
-				try{
-					Validaciones.dni(dni);
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-					continue;
-				}
-				break;
-			}while(true);
-			String codigoSecreto;
-			do {
-				System.out.println("Introduce cuatro palabras separadas por espacios");
-				frase=sc.nextLine();
-				try{
-					codigoSecreto = Validaciones.control(frase);
-				}catch (Exception e){
-					e.getMessage();
-					continue;
-				}
-				break;
-			}while(true);
 				System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
 						"email: "+email+"\n" +
 						"Codigo Secreto: "+codigoSecreto);
-
-
-			Cliente cliente__ = new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto);
-			gc.agregarCliente(cliente__);
 			System.out.println("¿Deseas iniciar sesión?(S/N): ");
 			opcion=sc.nextLine();
 			if(opcion.equals("S")||opcion.equals("s")) opcion="2";
 			else System.out.println("Finalizando...");
 		}
 		while(opcion.equals("2")){
-			System.out.println("Introduce tu correo electronico");
-			email = sc.nextLine();
-			System.out.println("Introduce tu codigo secreto");
-			frase = sc.nextLine();
+
+			//TODO seguir implementando en el view
 			ArrayList<Cliente> clientes = gc.getListadoClientes();
 			for(Cliente cliente_ : clientes){
 				if(cliente_.getEmail().equals(email) && cliente_.getCodigoAcceso().equals(frase)){
