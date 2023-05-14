@@ -1,6 +1,7 @@
 package Controllers;
 import java.util.ArrayList;
 
+import Exceptions.ClientAddedBeforeException;
 import Models.Cliente;
 
 public class GestorClientes {
@@ -56,12 +57,16 @@ public class GestorClientes {
 	}
 
 	/**
-	 * Añade un cliente al listado de clientes del gestor
-	 * @param cliente
+	 * Comprueba que no existe el cliente en el listado de clientes, y una vez confirmado, lo añade
+	 * @param cliente cliente que se quiere agregar al listado
+	 * @throws ClientAddedBeforeException El cliente ya existia en el listado
 	 */
-	//TODO modificar método para comprobar antes de insertar el cliente que no existe en el listado
-	public void agregarCliente(Cliente cliente){
-
+	public void agregarCliente(Cliente cliente) throws ClientAddedBeforeException{
+		for(Cliente c : listadoClientes){
+			if(c.equals(cliente)){
+				throw new ClientAddedBeforeException("El cliente ya se encuentra en el listado");
+			}
+		}
 		listadoClientes.add(cliente);
 	}
 
