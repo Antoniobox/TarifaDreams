@@ -1,4 +1,6 @@
 package Models;
+
+
 /**
  * @author Antoniobox
  * @version 1.0
@@ -112,7 +114,7 @@ public class Cliente extends Usuario{
 	}
 
 	/**
-	 * Compara dos clientes en base a los atributos codigoAcceso, Email y dni
+	 * Compara dos clientes basándonos en los atributos codigoAcceso, Email y dni
 	 * @param obj Cliente a comparar
 	 * @return Clientes idénticos
 	 */
