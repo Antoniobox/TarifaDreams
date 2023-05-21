@@ -18,10 +18,11 @@ public class RegistroClienteView {
      * Muestra un menu de registro para registrar clientes. Devuelve un cliente instanciado en base a los datos recogidos en el método
      * @return cliente instanciando con los datos recogidos en el método
      */
-    public Cliente menuRegistroCliente(){
+    public static Cliente menuRegistroCliente(){
         Scanner sc = new Scanner(System.in);
         String nombre, apellidos, email, telefono, fechaNacimiento, dni, frase;
 
+        System.out.println("------------------ REGISTRO CLIENTE ------------------");
         //Se recoge el nombre del cliente
         do {
             System.out.println("Introduce tu nombre:");
@@ -113,7 +114,9 @@ public class RegistroClienteView {
             }
             break;
         }while(true);
-
+        System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
+                "email: "+email+"\n" +
+                "Codigo Secreto: "+codigoSecreto);
         return new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto);
     }
 }
