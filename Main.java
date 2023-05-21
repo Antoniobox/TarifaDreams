@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import Views.InicioSesionView;
+import Views.RegistroClienteView;
+
 import Controllers.GestorClientes;
 import Exceptions.*;
 import Models.*;
@@ -13,24 +16,29 @@ import Views.MainView;
 public class Main {
 	public static void main(String[] args) {
 		String opcion="";
-
+		ArrayList<Cliente> clientes = new ArrayList<>();
+		clientes.add(new Cliente("Antonio", "Box Sanchez", "antonioboxsanchez@gmail.com", "693810626", "29594264A", "07/04/2004", "PPPP78"));
 		Cliente cliente = new Cliente();
+
 		boolean usuarioLogueado=false;
+		RegistroClienteView.menuRegistroCliente().getNombre();
 		Scanner sc = new Scanner(System.in);
+		System.out.println(InicioSesionView.menuInicioSesion(clientes).getNombre());
+
 		GestorClientes gc = new GestorClientes();
-		gc.generarClientesBase();
+		/*gc.generarClientesBase();
 		System.out.println("Bienvenido a Antonio DREAMS");
 		//TODO trasladar los menús a métodos en sus clases respectivas
 		MainView.menuInicio();
 		if(opcion.equals("1")){
-				System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
-						"email: "+email+"\n" +
-						"Codigo Secreto: "+codigoSecreto);
+
 			System.out.println("¿Deseas iniciar sesión?(S/N): ");
 			opcion=sc.nextLine();
 			if(opcion.equals("S")||opcion.equals("s")) opcion="2";
 			else System.out.println("Finalizando...");
 		}
+
+
 		while(opcion.equals("2")){
 
 			//TODO seguir implementando en el view
@@ -88,13 +96,13 @@ public class Main {
 					}
 				} while (!todoCorrecto);
 				//TODO implementar el uso de try-catch
-				/*do {
+				do {
 					System.out.println("¿Cuál es la fecha de entrada?");
 					fechaEntrada = sc.nextLine();
 					System.out.println("¿Cuál es la fecha de salida?");
 					fechaSalida = sc.nextLine();
 				} while (!Validaciones.fecha(fechaEntrada, true) || !Validaciones.fecha(fechaSalida, true));
-				*/int personasTotalReserva = Integer.parseInt(personasReserva);
+				int personasTotalReserva = Integer.parseInt(personasReserva);
 				int opcionHabitaciones = 0;
 				ArrayList<Habitacion> habitaciones = new ArrayList<>();
 				habitaciones.addAll(Habitacion.generarHabitacionesBase());
@@ -205,12 +213,12 @@ public class Main {
 						System.out.println("Bizum");
 						System.out.println("Introduce tu número de teléfono");
 						bizum = sc.nextLine();
-						/*if(Validaciones.telefono(bizum)){
+						if(Validaciones.telefono(bizum)){
 							System.out.println("Pago realizado");
 							pagoRealizado=true;
 						}else{
 							System.out.println("Número inválida");
-						}*/
+						}
 					}
 				}
 				if(pagoRealizado){
@@ -252,6 +260,6 @@ public class Main {
 				}
 				else if(respuesta.equals("0")) System.out.println("Saliendo");
 			}
-		}
+		}*/
 	}
 }
