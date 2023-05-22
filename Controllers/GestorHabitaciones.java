@@ -1,7 +1,7 @@
 package Controllers;
 
-import Exceptions.EmptyArrayListHabitacionesException;
-import Exceptions.InvalidFieldsHabitacion;
+import Exceptions.EmptyArrayListException;
+import Interfaces.CRUD;
 import Models.Habitacion;
 
 import java.io.*;
@@ -15,8 +15,9 @@ import java.util.ArrayList;
  * @since 2023-05-08
  * @version 1.0
  */
-public class GestorHabitaciones {
+public class GestorHabitaciones implements CRUD {
     ArrayList<Habitacion> habitaciones = new ArrayList<>();
+    public static final String DB_HABITACIONES = "Data/habitaciones";
 
     public GestorHabitaciones(){}
 
@@ -29,9 +30,8 @@ public class GestorHabitaciones {
      * @param habitaciones
      * @param cargarBD
      * @throws IOException
-     * @throws InvalidFieldsHabitacion
      */
-    public GestorHabitaciones(ArrayList<Habitacion> habitaciones, boolean cargarBD) throws IOException, InvalidFieldsHabitacion{
+    public GestorHabitaciones(ArrayList<Habitacion> habitaciones, boolean cargarBD) throws IOException{
         this.habitaciones = habitaciones;
         cargarBaseDeDatos();
     }
@@ -61,12 +61,11 @@ public class GestorHabitaciones {
 
     /**
      * Carga el fichero "habitaciones.dat", donde se encuentran los registros de las habitaciones, a la lista de habitaciones
-     * @throws FileNotFoundException
      * @throws IOException
-     * @throws InvalidFieldsHabitacion
      */
-    private void cargarBaseDeDatos() throws IOException, InvalidFieldsHabitacion {
-        FileReader fr = new FileReader("Data/habitaciones");
+    @Override
+    public void cargarBaseDeDatos() throws IOException {
+        FileReader fr = new FileReader(DB_HABITACIONES);
         BufferedReader br = new BufferedReader(fr);
 
         String linea;
@@ -80,13 +79,9 @@ public class GestorHabitaciones {
             id = Integer.parseInt(registro[0]);
             nombre = registro[1];
             descripcion = registro[2];
-            try{
-                num_camas = Integer.parseInt(registro[3]);
-                max_personas = Integer.parseInt(registro[4]);
-                precio = Double.parseDouble(registro[5]);
-            }catch(NumberFormatException e){
-                throw new InvalidFieldsHabitacion("Existen campos incorrectos en el registro");
-            }
+            num_camas = Integer.parseInt(registro[3]);
+            max_personas = Integer.parseInt(registro[4]);
+            precio = Double.parseDouble(registro[5]);
             habitaciones.add(new Habitacion(id, nombre, descripcion, num_camas, max_personas, precio));
         }
     }
@@ -94,16 +89,17 @@ public class GestorHabitaciones {
     /**
      * Almacena el contenido del arraylist de habitaciones en la BD
      * @throws IOException
-     * @throws EmptyArrayListHabitacionesException
+     * @throws EmptyArrayListException
      */
-    public void guardarRegistros() throws IOException, EmptyArrayListHabitacionesException{
-        FileWriter fw = new FileWriter("Data/habitaciones.dat", false);
+    @Override
+    public void guardarRegistros() throws IOException, EmptyArrayListException {
+        FileWriter fw = new FileWriter(DB_HABITACIONES, false);
         if(habitaciones.size() > 0){
             for(Habitacion h : habitaciones){
                 fw.write(h.formatearObjeto());
             }
         } else{
-            throw new EmptyArrayListHabitacionesException("No se puede guardar el listado de habitaciones (no existen habitaciones)");
+            throw new EmptyArrayListException("No se puede guardar el listado de habitaciones (no existen habitaciones)");
         }
         fw.close();
     }
