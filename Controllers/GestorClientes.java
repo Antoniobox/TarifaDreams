@@ -1,9 +1,17 @@
 package Controllers;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import Exceptions.EmptyArrayListException;
+import Interfaces.CRUD;
 import Models.Cliente;
+import Models.Habitacion;
 
-public class GestorClientes {
+public class GestorClientes implements CRUD {
+	public static final String DB_CLIENTES="Data/clientes.dat";
 	private ArrayList<Cliente> listadoClientes = new ArrayList<>();
 
 	public GestorClientes() {
@@ -50,19 +58,38 @@ public class GestorClientes {
 		listadoClientes.add(cliente);
 	}
 
-	/**
-	 * Genera 7 clientes y los introduce en el arraylist
-	 */
-	public void generarClientesBase(){
-		/*
-		******************----------------- LA INFORMACIÓN PERSONAL DE LOS CLIENTES ESTA ALTERADA POR SU PRIVACIDAD, PARA MÁS INFORMACIÓN CONTACTAR CON EL ADMINISTRADOR -----------------******************
-		 */
-		listadoClientes.add(new Cliente("Antonio", "Box Sanchez", "antonioboxsanchez@gmail.com", "693810626", "29594264A", "07/04/2004", "PPPP78"));
-		listadoClientes.add(new Cliente("Sergio", "Manresa Bernabeu", "sergiomb8@gmail.com", "666777888", "87960573N", "08/01/2004", "PPPP77"));
-		listadoClientes.add(new Cliente("Jorge", "Carmona Girona", "jocargi@gmail.com", "69381067", "29594265A", "27/12/2004", "PPPP76"));
-		listadoClientes.add(new Cliente("Manuel", "García Santamaría", "manugs475@gmail.com", "693810629", "29594269A", "12/03/2003", "PPPP75"));
-		listadoClientes.add(new Cliente("Alexis Javier", "Escolano Mora", "alexiscis@gmail.com", "693810621", "47362564A", "15/11/2004", "PPPP74"));
-		listadoClientes.add(new Cliente("Iker", "Berna Morales", "iker@gmail.com", "623810626", "29593264A", "17/04/2004", "PPPP73"));
-		listadoClientes.add(new Cliente("Maria del Carmen", "Ortuño", "maricarmenortuno@gmail.com", "693810616", "29594294A", "23/08/1990", "PPPP72"));
+	@Override
+	public void cargarBaseDeDatos() throws IOException {
+		FileReader fr = new FileReader(DB_CLIENTES);
+		BufferedReader br = new BufferedReader(fr);
+
+		String linea;
+		String[] registro;
+
+		while((linea=br.readLine())!=null){
+			registro = linea.split(";");
+			String nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoAcceso;
+			nombre = registro[0];
+			apellidos = registro[1];
+			email = registro[2];
+			telefono = registro[3];
+			dni = registro[4];
+			fechaNacimiento = registro[5];
+			codigoAcceso = registro[6];
+			listadoClientes.add(new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoAcceso));
+		}
+	}
+
+	@Override
+	public void guardarRegistros() throws IOException, EmptyArrayListException {
+		FileWriter fw = new FileWriter(DB_CLIENTES, false);
+		if(listadoClientes.size() > 0){
+			for(Cliente c : listadoClientes){
+				fw.write(c.formatearObjeto());
+			}
+		} else{
+			throw new EmptyArrayListException("No se puede guardar el listado de clientes (no existen clientes)");
+		}
+		fw.close();
 	}
 }
