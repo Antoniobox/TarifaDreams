@@ -6,9 +6,9 @@ package Exceptions;
  * @since 2023-05-10
  * @version 1.0
  */
-public class EmptyArrayListHabitacionesException extends Exception{
+public class EmptyArrayListException extends Exception{
     public String mensaje;
-    public EmptyArrayListHabitacionesException(String mensaje){
+    public EmptyArrayListException(String mensaje){
         this.mensaje = mensaje;
     }
 
