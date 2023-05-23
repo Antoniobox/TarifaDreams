@@ -1,4 +1,5 @@
 package Models;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 /**
@@ -12,7 +13,7 @@ public class Habitacion {
 	private String descripcion;
 	private int num_camas;
 	private int max_personas;
-	private String fechasOcupadas="";
+	private ArrayList<LocalDate[]> fechasOcupadas;
 
 
 	private double precio;
@@ -78,13 +79,13 @@ public class Habitacion {
 		this.precio = precio;
 	}
 
-	public String getFechasOcupadas() {
+	public ArrayList<LocalDate[]> getFechasOcupadas() {
 		return fechasOcupadas;
 	}
 
-	public void setFechasOcupadas(String fechasOcupadas) {
-		this.fechasOcupadas = fechasOcupadas;
-		this.fechasOcupadas+=",";
+	public void setFechasOcupadas(LocalDate fechaEntrada, LocalDate fechaSalida) {
+		LocalDate[] rangoFechas = {fechaEntrada, fechaSalida};
+		fechasOcupadas.add(rangoFechas);
 	}
 
 	@Override
@@ -105,7 +106,7 @@ public class Habitacion {
 	 * @return String con los atributos separados por ;
 	 */
 	public String formatearObjeto(){
-		return id + ";"+ nombre + ";" + descripcion + ";" + num_camas + ";" + max_personas + ";" + precio;
+		return id + ";"+ nombre + ";" + descripcion + ";" + num_camas + ";" + max_personas + ";" + precio + "\n";
 	}
 
 	/**
@@ -135,72 +136,21 @@ public class Habitacion {
 	}
 
 	/**
-	 * Comprueba la disponibilidad de la habitación
-	 * @param rangoFecha
-	 * @return habitacion disponible para esa fecha
+	 * Comprueba si una habitación está disponible en cierta fecha
+	 * @param fechaEntrada
+	 * @param fechaSalida
+	 * @return devuelve tru si la habitación está disponible con base en las fechas que se indican
 	 */
-	public boolean comprobarDisponibilidadHabitacion(String rangoFecha){
-		if(fechasOcupadas.length()==0) return true;
-		else{
-			//Contador para finalizar el bucle una vez se hayan recorrido todas las fechas
-			int contadorFinal=0;
-			int contador=0;
-			while(fechasOcupadas.length()>contadorFinal){
-				//Comprobamos primero que los rangos no son iguales
-				String fechaInicio="", fechaFin="", rangoFechas="";
-				String fechaInicioReserva="", fechaFinReserva="";
-				contador=contadorFinal;
-				for(int i=contadorFinal; fechasOcupadas.charAt(i)!=':'; i++){
-					fechaInicio+=fechasOcupadas.charAt(i);
-					contador++;
-				}
-				for(int i=contador+1; fechasOcupadas.charAt(i)!=',';i++){
-					fechaFin+=fechasOcupadas.charAt(i);
-				}
-				rangoFechas+=fechaInicio+':'+fechaFin;
-				if(rangoFechas.equals(rangoFecha)) return false;
-
-				//Separo los datos en variables para validar
-				int diasFechaRangoInicio=Integer.parseInt(fechaInicio.substring(0, 2));
-				int diasFechaRangoFin=Integer.parseInt(fechaFin.substring(0, 2));
-				int mesFechaRangoInicio=Integer.parseInt(fechaInicio.substring(3, 5));
-				int mesFechaRangoFin=Integer.parseInt(fechaFin.substring(3, 5));
-				int anyoFechaRangoInicio=Integer.parseInt(fechaInicio.substring(6, 10));
-				int anyoFechaRangoFin=Integer.parseInt(fechaFin.substring(6, 10));
-
-				//Separo los datos del rango de fechas de la reserva del parámetro
-				for (int i = 0; rangoFecha.charAt(i)!=':'; i++) {
-					fechaInicioReserva+=rangoFecha.charAt(i);
-					contador=i;
-				}
-				for(int i=contador+2; i<rangoFecha.length();i++){
-					fechaFinReserva+=rangoFecha.charAt(i);
-				}
-
-				//Fecha de entrada de la reserva
-				int diasFechaInicioReserva=Integer.parseInt(fechaInicioReserva.substring(0, 2));
-				int mesFechaInicioReserva=Integer.parseInt(fechaInicioReserva.substring(3,5));
-				int anyoFechaInicioReserva=Integer.parseInt(fechaInicioReserva.substring(6,10));
-
-				//Fecha de Salida de la reserva
-				int diasFechaFinReserva=Integer.parseInt(fechaFinReserva.substring(0, 2));
-				int mesFechaFinReserva=Integer.parseInt(fechaFinReserva.substring(3,5));
-				int anyoFechaFinReserva=Integer.parseInt(fechaFinReserva.substring(6,10));
-
-				//Realizamos las comprobaciones pertinentes
-				//"20/10/2023:25/10/2023" rangoFechaReserva
-				//"24/09/2023:30/09/2023,10/10/2023:16/10/2023" fechasOcupadas
-				if((diasFechaRangoInicio<=diasFechaInicioReserva && diasFechaFinReserva <=diasFechaRangoFin && mesFechaRangoInicio==mesFechaInicioReserva && mesFechaFinReserva==mesFechaRangoFin && anyoFechaInicioReserva==anyoFechaRangoInicio))return false;
-				else if(diasFechaInicioReserva<diasFechaRangoInicio&&diasFechaFinReserva>=diasFechaRangoInicio && mesFechaRangoInicio==mesFechaInicioReserva && mesFechaFinReserva==mesFechaRangoFin && anyoFechaInicioReserva==anyoFechaRangoInicio) return false;
-				//Si el dia primer dia de la reserva coincide con el primer dia de una reserva, se devuelve mal
-				else if(diasFechaInicioReserva==diasFechaRangoInicio && mesFechaInicioReserva==mesFechaRangoInicio && anyoFechaRangoInicio==anyoFechaInicioReserva) return false;
-
-				else if(diasFechaInicioReserva>diasFechaRangoInicio && diasFechaRangoFin > diasFechaInicioReserva) return false;
-
-				else if(mesFechaFinReserva==mesFechaRangoFin && diasFechaFinReserva >= diasFechaRangoInicio && diasFechaRangoInicio>=diasFechaInicioReserva) return false;
-				contadorFinal+=22;
+	public boolean comprobarDisponibilidadHabitacion(LocalDate fechaEntrada, LocalDate fechaSalida){
+		if(fechaEntrada.isAfter(LocalDate.now())){
+			return false;
+		}
+		for(LocalDate[] fechas : fechasOcupadas){
+			LocalDate fechaInicio = fechas[0];
+			LocalDate fechaFin = fechas[1];
+			if (!fechaEntrada.isAfter(fechaInicio) && !fechaSalida.isBefore(fechaFin)) {
+				return false;
 			}
-
 		}
 		return true;
 	}
