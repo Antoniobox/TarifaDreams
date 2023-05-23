@@ -1,9 +1,5 @@
 package Models;
-/**
- * @author Antoniobox
- * @version 1.0
- * @since 18/02/2023
- */
+
 public class Cliente extends Usuario{
 	private String nombre;
 	private String apellidos;
@@ -86,6 +82,10 @@ public class Cliente extends Usuario{
 
 	public void setCodigoAcceso(String codigoAcceso) {
 		this.codigoAcceso = codigoAcceso;
+	}
+
+	public String formatearObjeto(){
+		return nombre + ";"+ apellidos + ";" + email + ";" + telefono + ";" + dni + ";" + fechaNacimiento + ";" + codigoAcceso + "\n";
 	}
 
 	@Override

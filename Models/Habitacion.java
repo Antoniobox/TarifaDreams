@@ -142,7 +142,7 @@ public class Habitacion {
 	 * @return devuelve tru si la habitación está disponible con base en las fechas que se indican
 	 */
 	public boolean comprobarDisponibilidadHabitacion(LocalDate fechaEntrada, LocalDate fechaSalida){
-		if(fechaEntrada.isAfter(LocalDate.now())){
+		if(fechaEntrada.isBefore(LocalDate.now())){
 			return false;
 		}
 		for(LocalDate[] fechas : fechasOcupadas){
