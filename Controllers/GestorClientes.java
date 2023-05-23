@@ -4,9 +4,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import Exceptions.EmptyArrayListException;
 import Interfaces.CRUD;
+import Exceptions.ClientAddedBeforeException;
 import Models.Cliente;
 import Models.Habitacion;
 
@@ -39,6 +39,19 @@ public class GestorClientes implements CRUD {
 	}
 
 	/**
+	 * Comprueba en base al email y al codigo secreto de un cliente si existe en el listado.
+	 * @return cliente encontrado en caso de que coincidan en un registro, y devuelve null en caso de que no encuentre alguno
+	 */
+	public Cliente comprobarSiClienteExiste(String email, String codigo){
+		for(Cliente c : listadoClientes){
+			if(c.equals(email, codigo)){
+				return c;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Busca un cliente en el listado de los clientes
 	 * @param cliente_a_buscar
 	 * @return cliente encontrado en el listado
@@ -51,10 +64,16 @@ public class GestorClientes implements CRUD {
 	}
 
 	/**
-	 * Añade un cliente al listado de clientes del gestor
-	 * @param cliente
+	 * Comprueba que no existe el cliente en el listado de clientes, y una vez confirmado, lo añade
+	 * @param cliente cliente que se quiere agregar al listado
+	 * @throws ClientAddedBeforeException El cliente ya existia en el listado
 	 */
-	public void agregarCliente(Cliente cliente){
+	public void agregarCliente(Cliente cliente) throws ClientAddedBeforeException{
+		for(Cliente c : listadoClientes){
+			if(c.equals(cliente)){
+				throw new ClientAddedBeforeException("El cliente ya se encuentra en el listado");
+			}
+		}
 		listadoClientes.add(cliente);
 	}
 

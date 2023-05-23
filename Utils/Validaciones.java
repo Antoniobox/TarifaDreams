@@ -5,14 +5,10 @@ import org.junit.Ignore;
 import java.util.Calendar;
 
 /**
- * Clase con métodos que permiten validar datos básicos de un cliente, como pueden ser:
- * - Nombre y sus apellidos
- * - Teléfono
- * - Correo electrónico
- *
+ * Clase con métodos que permiten validar los datos de un cliente
  * @author Antoniobox
  * @since 18/02/2023
- * @version 1.0
+ * @version 2.0
  */
 public class Validaciones {
 

@@ -1,5 +1,9 @@
 package Models;
-
+/**
+ * @author Antoniobox
+ * @version 1.0
+ * @since 18/02/2023
+ */
 public class Cliente extends Usuario{
 	private String nombre;
 	private String apellidos;
@@ -112,7 +116,7 @@ public class Cliente extends Usuario{
 	}
 
 	/**
-	 * Compara dos clientes en base a los atributos codigoAcceso e Email
+	 * Compara dos clientes basándonos en los atributos codigoAcceso, Email y dni
 	 * @param obj Cliente a comparar
 	 * @return Clientes idénticos
 	 */
@@ -122,6 +126,16 @@ public class Cliente extends Usuario{
 			return false;
 		}
 		Cliente cliente = (Cliente) obj;
-		return cliente.getEmail().equals(this.getEmail()) && cliente.getCodigoAcceso().equals(this.getCodigoAcceso());
+		return cliente.getEmail().equals(this.getEmail()) && cliente.getCodigoAcceso().equals(this.getCodigoAcceso()) && cliente.getDni().equals(this.getDni());
+	}
+
+	/**
+	 * Comprueba que mediante los parametros que se requiren para iniciar sesión, el cliente coincide
+	 * @param email
+	 * @param codigo
+	 * @return true cliente con campos coincidentes, false si no coincide alguno de los campos
+	 */
+	public boolean equals(String email, String codigo){
+		return email.equals(this.getEmail()) && codigo.equals(this.getCodigoAcceso());
 	}
 }

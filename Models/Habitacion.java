@@ -121,19 +121,6 @@ public class Habitacion {
 		aIds.add(Integer.parseInt(ids.substring(coma+1, ids.length())));
 		return aIds;
 	}
-	/**
-	 * Genera 5 habitaciones por defecto y te las devuelve en un ArrayList
-	 * @return habitaciones base
-	 */
-	public static ArrayList<Habitacion> generarHabitacionesBase(){
-		ArrayList<Habitacion> habitaciones = new ArrayList<>();
-		habitaciones.add(new Habitacion((int)(Math.random()*1000+1), "A1", "habitacion con vistas a la ciudad", 4, 8, 80.50));
-		habitaciones.add(new Habitacion((int)(Math.random()*1000+1), "A2", "habitacion con vistas a la piscina", 2, 3, 40.75));
-		habitaciones.add(new Habitacion((int)(Math.random()*1000+1), "A3", "habitacion con vistas al campo", 1, 1, 70.00));
-		habitaciones.add(new Habitacion((int)(Math.random()*1000+1), "A4", "habitacion con vistas a un descampado", 2, 4, 75.00));
-		habitaciones.add(new Habitacion((int)(Math.random()*1000+1), "A5", "habitacion con vistas a la montaña", 3, 5, 60.30));
-		return habitaciones;
-	}
 
 	/**
 	 * Comprueba si una habitación está disponible en cierta fecha
