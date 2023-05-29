@@ -1,5 +1,9 @@
 package Models;
+import Exceptions.InvalidDateFormatException;
+
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 /**
@@ -28,6 +32,7 @@ public class Habitacion {
 		this.num_camas = num_camas;
 		this.max_personas = max_personas;
 		this.precio = precio;
+		fechasOcupadas = new ArrayList<>();
 	}
 
 	public int getId() {
@@ -114,12 +119,9 @@ public class Habitacion {
 	 * @param ids String con los ids de las habitaciones usando como separador el ;
 	 * @return ArrayList con los ID's
 	 */
-	public static ArrayList<Integer> getIdsListado(String ids){
-		ArrayList<Integer> aIds = new ArrayList<>();
-		int coma = ids.indexOf(',');
-		aIds.add(Integer.parseInt(ids.substring(0, coma)));
-		aIds.add(Integer.parseInt(ids.substring(coma+1, ids.length())));
-		return aIds;
+	public static String[] getIdsListado(String ids){
+		String[] aids = ids.split(";");
+		return aids;
 	}
 
 	/**
@@ -140,5 +142,17 @@ public class Habitacion {
 			}
 		}
 		return true;
+	}
+
+	public LocalDate formatearFecha(String fecha) throws InvalidDateFormatException {
+
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate fechaFinal;
+		try {
+			fechaFinal = LocalDate.parse(fecha, formatter);
+		} catch (DateTimeParseException e) {
+			throw new InvalidDateFormatException("Fecha inválida");
+		}
+		return fechaFinal;
 	}
 }

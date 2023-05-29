@@ -2,7 +2,14 @@ package Utils;
 import Exceptions.*;
 import org.junit.Ignore;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Clase con métodos que permiten validar los datos de un cliente
@@ -143,15 +150,11 @@ public class Validaciones {
 	public static void telefono(String telefono) throws InvalidFormatNumberException, NumberNotAllowedException{
 		//Eliminamos cualquier tipo de espacio existente
 		telefono = telefono.replaceAll("\\s", "");
-
-		if(telefono != null && telefono.length()==9){
-			for(int i=0; i<telefono.length(); i++){
-				if(telefono.charAt(i) < '0' ||telefono.charAt(i) > '9'){
-					throw new InvalidFormatNumberException("No se aceptan esos caracteres");
-				}
-			}
-		}else{
-			throw new InvalidFormatNumberException("String incompleto");
+		String patron = "\\d{9}";
+		Pattern pattern = Pattern.compile(patron);
+		Matcher matcher = pattern.matcher(telefono);
+		if(!matcher.matches()){
+			throw new InvalidFormatNumberException("Número inválido");
 		}
 		if(!(telefono.charAt(0) == '9' || telefono.charAt(0) == '8' || telefono.charAt(0) == '6' || telefono.charAt(0) == '7')) {
 			throw new NumberNotAllowedException("No se acepta ese número de teléfono");
@@ -159,83 +162,27 @@ public class Validaciones {
 	}
 
 	/**
-	 *  Comprueba que la fecha de nacimiento es correcta en base a los siguientes criterios
-	 * 	- El dia, el mes, y el año deben de o estar separados por '/' o por '-'.
-	 * 	- Debe de respetar los dias, meses y años del calendario gregoriano
-	 * 	- Deben de ser números
-	 * 	- La longitud de la fecha ha de ser de 10 caracteres
+	 * Comprueba que la fecha es correcta
 	 * @param date
-	 * @param validarSintaxis
+	 * @param validarSintaxis true si no se quiere comprobar la edad del usuario, false si se quiere comprobar que es mayor de edad
 	 * @throws InvalidDateFormatException
 	 * @throws AgeOfUserNotAllowedException
 	 */
 
 	public static void fecha(String date, boolean validarSintaxis) throws InvalidDateFormatException, AgeOfUserNotAllowedException{
-		int mes, anyo, dias;
-		int anyoActual = Calendar.getInstance().get(Calendar.YEAR);
-		boolean bisiesto = false;
-		date = date.trim();
-		if(date.length()!=10){
-			throw new InvalidDateFormatException("Longitud no permitida");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		LocalDate fecha;
+		LocalDate fechaActual = LocalDate.now();
+		try {
+			fecha = LocalDate.parse(date, formatter);
+		} catch (DateTimeParseException e) {
+			throw new InvalidDateFormatException("Fecha inválida");
 		}
-		if((date.charAt(2)!='/' || date.charAt(5)!='/') && (date.charAt(2)!='-' || date.charAt(5)!='-')) {
-			throw new InvalidDateFormatException("FORMATO INVALIDO");
-		}
-
-		//Comprueba que los dias, meses y años se encuentran en formato numérico
-		for(int i = 0; i < 10; i++){
-			if(i!=2 && i!=5){
-				if(date.charAt(i) < '0' || date.charAt(i) > '9' ){
-					throw new InvalidDateFormatException("Formato de la fecha incorrecto (solo se permiten números)");
-				}
-			}
-		}
-		dias = Integer.parseInt(date.substring(0, 2));
-		mes = Integer.parseInt(date.substring(3, 5));
-		anyo = Integer.parseInt(date.substring(6, 10));
-
-		if((anyo%4==0 && anyo%100!=0) || anyo%400==0)
-			bisiesto = true;
-		if(mes==1 || mes==3 || mes==5 || mes==7 || mes==8 || mes==10 || mes==12){
-			if(dias > 31 || dias <= 0){
-				throw new InvalidDateFormatException("Error con los dias");
-			}
-		}
-		else if(mes==4||mes==6||mes==9||mes==11){
-			if(dias>30 || dias <= 0){
-				throw new InvalidDateFormatException("Error con los meses");
-			}
-		}
-		else if(mes==2) {
-			if (bisiesto) {
-				if (dias > 29 || dias <= 0) {
-					throw new InvalidDateFormatException("Has superado el número de días permitido (febrero no tiene más de 29)");
-				}
-			} else {
-				if (dias > 28 || dias <= 0) {
-					throw new InvalidDateFormatException("Has superado el número de días permitido (febrero no tiene más de 28)");
-				}
-			}
-		}
-		//Rango de años permitidos
 		if(!validarSintaxis){
-			if(anyo<1950 ||anyo>anyoActual){
-				throw new InvalidDateFormatException("Año no permitido");
+			Period edadUsuario = Period.between(fecha, fechaActual);
+			if(edadUsuario.getYears()<18){
+				throw new AgeOfUserNotAllowedException("Usuario menor de edad");
 			}
-			if(anyoActual-anyo < 18){
-				throw new AgeOfUserNotAllowedException("Usuario menor de edad, denegado el permiso para registrarse");
-			}
-		}
-		else{
-			if(anyo<anyoActual){
-				throw new InvalidDateFormatException("Año inferior al año actual");
-			}
-		}
-		if(mes < 0 || mes > 12){
-			throw new InvalidDateFormatException("El mes debe de ser del 1-12");
-		}
-		if(!(dias>0 && mes>0)){
-			throw new InvalidDateFormatException("No se acepta el valor 0");
 		}
 	}
 
@@ -245,6 +192,10 @@ public class Validaciones {
 	 * @return
 	 */
 	public static boolean validarTarjeta(String numero) {
+		if(numero.length() > 18 || numero.length() < 13){
+			System.out.println("Longitud inválida");
+			return false;
+		}
 		int suma = 0;
 		boolean alternar = false;
 		for (int i = numero.length() - 1; i >= 0; i--) {

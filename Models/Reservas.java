@@ -1,4 +1,5 @@
 package Models;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Reservas {
@@ -6,8 +7,8 @@ public class Reservas {
 	private String id_cliente;
 	private ArrayList<Integer> id_habitacion;
 
-	private String fecha_entrada;
-	private String fecha_salida;
+	private LocalDate fecha_entrada;
+	private LocalDate fecha_salida;
 
 	public int getCod() {
 		return cod;
@@ -33,23 +34,23 @@ public class Reservas {
 		this.id_habitacion = id_habitacion;
 	}
 
-	public String getFecha_entrada() {
+	public LocalDate getFecha_entrada() {
 		return fecha_entrada;
 	}
 
-	public void setFecha_entrada(String fecha_entrada) {
+	public void setFecha_entrada(LocalDate fecha_entrada) {
 		this.fecha_entrada = fecha_entrada;
 	}
 
-	public String getFecha_salida() {
+	public LocalDate getFecha_salida() {
 		return fecha_salida;
 	}
 
-	public void setFecha_salida(String fecha_salida) {
+	public void setFecha_salida(LocalDate fecha_salida) {
 		this.fecha_salida = fecha_salida;
 	}
 
-	public Reservas(int cod, String id_cliente, ArrayList<Integer> id_habitacion, String fecha_entrada, String fecha_salida) {
+	public Reservas(int cod, String id_cliente, ArrayList<Integer> id_habitacion, LocalDate fecha_entrada, LocalDate fecha_salida) {
 		this.cod = cod;
 		this.id_cliente = id_cliente;
 		this.id_habitacion = id_habitacion;
