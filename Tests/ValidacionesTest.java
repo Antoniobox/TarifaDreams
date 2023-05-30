@@ -83,4 +83,14 @@ public class ValidacionesTest {
     public void testValidarTarjeta() {
 
     }
+
+    @Test
+    public void testNombreUsuario(){
+        assertThrows(InvalidUsernameException.class, () -> {
+            Validaciones.nombreUsuario("Antonio 1");
+            Validaciones.nombreUsuario("");
+            Validaciones.nombreUsuario("Ant");
+            Validaciones.nombreUsuario("    ");
+        });
+    }
 }

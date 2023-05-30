@@ -1,14 +1,15 @@
 package Views;
 
 import Controllers.GestorClientes;
-import Exceptions.InvalidDateFormatException;
 import Exceptions.OptionOutOfRangeException;
 import Models.Cliente;
 import Models.Habitacion;
+import Models.Reservas;
 import Models.Usuario;
 import Utils.Validaciones;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -130,7 +131,7 @@ public class ClienteView {
             try{
                 codigoSecreto = Validaciones.control(frase);
             }catch (Exception e){
-                e.getMessage();
+                System.out.println(e.getMessage());;
                 continue;
             }
             break;
@@ -418,5 +419,23 @@ public class ClienteView {
             System.out.println(respuestas.get(Integer.parseInt(respuesta)-1));
         }
         else if(respuesta.equals("0")) System.out.println("Saliendo");
+    }
+
+    public static void imprimirFactura(Reservas reserva, Cliente cliente){
+        cliente.infoBasica();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
+        System.out.println("Fecha de facturación: "+dtf.format(now));
+        double precioTotalReserva = 0;
+        for(int x : reserva.getId_habitacion()){
+            for(Habitacion h : habitaciones){
+                if(h.getId()==x){
+                    System.out.println("Habitacion "+h.getNombre()+" para "+h.getMax_personas());
+                    h.setFechasOcupadas(fechaEntrada+":"+fechaSalida);
+                    precioTotalReserva+=h.getPrecio();
+                }
+            }
+        }
+        System.out.println("Precio total: "+(precioTotalReserva+precioTotalReserva*IVA));
     }
 }

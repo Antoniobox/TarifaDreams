@@ -7,6 +7,7 @@ import Controllers.GestorClientes;
 import Models.*;
 
 public class Main {
+	public static final float IVA = 0.21f;
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		String opcion="";
@@ -80,21 +81,7 @@ public class Main {
 				}
 				if(pagoRealizado){
 					Reservas reserva = new Reservas((int)(Math.random()*1000+1), cliente.getDni(), Habitacion.getIdsListado(opcionesHabitacion.get(Integer.parseInt(opcionHabitacion))), fechaEntrada, fechaSalida);
-					cliente.infoBasica();
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-					LocalDateTime now = LocalDateTime.now();
-					System.out.println("Fecha de facturación: "+dtf.format(now));
-					double precioTotalReserva = 0;
-					for(int x : reserva.getId_habitacion()){
-						for(Habitacion h : habitaciones){
-							if(h.getId()==x){
-								System.out.println("Habitacion "+h.getNombre()+" para "+h.getMax_personas());
-								h.setFechasOcupadas(fechaEntrada+":"+fechaSalida);
-								precioTotalReserva+=h.getPrecio();
-							}
-						}
-					}
-					System.out.println("Precio total: "+(precioTotalReserva+precioTotalReserva*0.21));
+					//Imprimir factura
 				}
 			}
 			else if(opcionHabitacion.equals("2")){
