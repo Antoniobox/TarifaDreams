@@ -5,6 +5,7 @@ import Exceptions.InvalidDateFormatException;
 import Exceptions.OptionOutOfRangeException;
 import Models.Cliente;
 import Models.Habitacion;
+import Models.Usuario;
 import Utils.Validaciones;
 
 import java.time.LocalDate;
@@ -22,9 +23,9 @@ import java.util.Scanner;
 public class ClienteView {
     /**
      * Muestra un menu de registro para registrar clientes. Devuelve un cliente instanciado en base a los datos recogidos en el método
-     * @return cliente instanciando con los datos recogidos en el método
+     * @return cliente instanciando con los datos recogidos en el método y usuario instanciado
      */
-    public static Cliente menuRegistroCliente(){
+    public static Object[] menuRegistroCliente(){
         Scanner sc = new Scanner(System.in);
         String nombre, apellidos, email, telefono, fechaNacimiento, dni, frase;
 
@@ -107,6 +108,20 @@ public class ClienteView {
             break;
         }while(true);
 
+        String nombreUsuario;
+
+        do{
+            System.out.println("Introduce tu nombre de usuario");
+            nombreUsuario = sc.nextLine();
+            try{
+                Validaciones.nombreUsuario(nombreUsuario);
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+                continue;
+            }
+            break;
+        }while(true);
+
         //Se calcula el codigo secreto del cliente
         String codigoSecreto;
         do {
@@ -123,7 +138,8 @@ public class ClienteView {
         System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
                 "email: "+email+"\n" +
                 "Codigo Secreto: "+codigoSecreto);
-        return new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto);
+        Object[] usuarioYCliente = {new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto), new Usuario(nombreUsuario, codigoSecreto, email, false)};
+        return usuarioYCliente;
     }
 
     /**

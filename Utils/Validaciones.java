@@ -56,8 +56,6 @@ public class Validaciones {
 	 * @param sonApellidos
 	 * @return nombre o apellidos válidos
 	 */
-
-
 	public static void nombreYApellidos(String frase, boolean sonApellidos) throws InvalidCharacterInNameException, EmptyStringException{
 		frase = frase.trim();
 		frase = frase.toUpperCase();
@@ -284,5 +282,21 @@ public class Validaciones {
 		codigo = mayusculas+(codigoNum/4 - codigoNum%4);
 		codigo = codigo.toUpperCase();
 		return codigo;
+	}
+
+	/**
+	 * Método para validar el nombre de usuario
+	 * @param nombreUsuario
+	 */
+	public static void nombreUsuario(String nombreUsuario) throws InvalidUsernameException{
+		//La única comprobación que se ha de realizar es que cumpla con la longitud adecuada y que no existan espacios en blanco
+		if(nombreUsuario.length()<4){
+			throw new InvalidUsernameException("Longitud inválida");
+		}
+		for(int i=0; i<nombreUsuario.length();i++){
+			if(nombreUsuario.charAt(i)==' '){
+				throw new InvalidUsernameException("No se admiten espacios en blanco");
+			}
+		}
 	}
 }
