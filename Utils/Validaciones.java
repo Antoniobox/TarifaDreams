@@ -218,6 +218,7 @@ public class Validaciones {
 	 * @return dni valido
 	 */
 	public static void dni(String dni) throws InvalidDNIFormatException{
+		dni = dni.toUpperCase();
 		//la longitud de un DNI siempre es de 9 caracteres
 		if(dni.length()!=9){
 			throw new InvalidDNIFormatException("La longitud del DNI no es correcta");

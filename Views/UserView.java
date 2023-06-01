@@ -1,11 +1,11 @@
 package Views;
 
 import Controllers.GestorClientes;
+import Exceptions.InvalidUserException;
 import Exceptions.OptionOutOfRangeException;
 import Models.Cliente;
 import Models.Habitacion;
 import Models.Reservas;
-import Models.Usuario;
 import Utils.Validaciones;
 
 import java.time.LocalDateTime;
@@ -21,126 +21,138 @@ import java.util.Scanner;
  * @since 2023-05-12
  * @version 1.0
  */
-public class ClienteView {
+public class UserView {
+    public static final float IVA = 0.21f;
+
     /**
      * Muestra un menu de registro para registrar clientes. Devuelve un cliente instanciado en base a los datos recogidos en el método
      * @return cliente instanciando con los datos recogidos en el método y usuario instanciado
      */
-    public static Object[] menuRegistroCliente(){
+    public static Cliente menuRegistroCliente(GestorClientes gc) throws InvalidUserException {
         Scanner sc = new Scanner(System.in);
-        String nombre, apellidos, email, telefono, fechaNacimiento, dni, frase;
-
-        System.out.println("------------------ REGISTRO CLIENTE ------------------");
-        //Se recoge el nombre del cliente
-        do {
-            System.out.println("Introduce tu nombre:");
-            nombre=sc.nextLine();
-            try{
-                Validaciones.nombreYApellidos(nombre, false);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        //Se recogen los apellidos del cliente
-        do {
-            System.out.println("Introduce tus apellidos");
-            apellidos=sc.nextLine();
-            try{
-                Validaciones.nombreYApellidos(apellidos, true);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        //Se recoge el email del cliente
-        do {
-            System.out.println("Introduce el email");
-            email=sc.nextLine();
-            try{
-                Validaciones.email(email);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        //Se recoge el número de telefono del cliente
-        do {
-            System.out.println("Introduce el numero de telefono");
-            telefono=sc.nextLine();
-            try{
-                Validaciones.telefono(telefono);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        //Se recoge la fecha de nacimiento del cliente
-        do {
-            System.out.println("Introduce la fecha de nacimiento");
-            fechaNacimiento=sc.nextLine();
-            try{
-                Validaciones.fecha(fechaNacimiento, false);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        //Se recoge el dni del cliente
-        do{
-            System.out.println("Introduce tu dni");
-            dni=sc.nextLine();
-            try{
-                Validaciones.dni(dni);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
-
-        String nombreUsuario;
+        String nombre, apellidos, email, telefono, fechaNacimiento, dni, frase, codigoSecreto ,nombreUsuario;;
+        boolean volverARealizarRegistro = false, usuarioIncorrecto=false;
 
         do{
-            System.out.println("Introduce tu nombre de usuario");
-            nombreUsuario = sc.nextLine();
-            try{
-                Validaciones.nombreUsuario(nombreUsuario);
-            }catch(Exception e){
-                System.out.println(e.getMessage());
-                continue;
-            }
-            break;
-        }while(true);
+            usuarioIncorrecto = false;
+            System.out.println("------------------ REGISTRO CLIENTE ------------------");
+            //Se recoge el nombre del cliente
+            do {
+                System.out.println("Introduce tu nombre:");
+                nombre=sc.nextLine();
+                try{
+                    Validaciones.nombreYApellidos(nombre, false);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
 
-        //Se calcula el codigo secreto del cliente
-        String codigoSecreto;
-        do {
-            System.out.println("Introduce cuatro palabras separadas por espacios");
-            frase=sc.nextLine();
-            try{
-                codigoSecreto = Validaciones.control(frase);
-            }catch (Exception e){
-                System.out.println(e.getMessage());;
-                continue;
+            //Se recogen los apellidos del cliente
+            do {
+                System.out.println("Introduce tus apellidos");
+                apellidos=sc.nextLine();
+                try{
+                    Validaciones.nombreYApellidos(apellidos, true);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            //Se recoge el email del cliente
+            do {
+                System.out.println("Introduce el email");
+                email=sc.nextLine();
+                try{
+                    Validaciones.email(email);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            //Se recoge el número de telefono del cliente
+            do {
+                System.out.println("Introduce el numero de telefono");
+                telefono=sc.nextLine();
+                try{
+                    Validaciones.telefono(telefono);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            //Se recoge la fecha de nacimiento del cliente
+            do {
+                System.out.println("Introduce la fecha de nacimiento");
+                fechaNacimiento=sc.nextLine();
+                try{
+                    Validaciones.fecha(fechaNacimiento, false);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            //Se recoge el dni del cliente
+            do{
+                System.out.println("Introduce tu dni");
+                dni=sc.nextLine();
+                try{
+                    Validaciones.dni(dni);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            do{
+                System.out.println("Introduce tu nombre de usuario");
+                nombreUsuario = sc.nextLine();
+                try{
+                    Validaciones.nombreUsuario(nombreUsuario);
+                }catch(Exception e){
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                break;
+            }while(true);
+
+            //Se calcula el codigo secreto del cliente
+            do {
+                System.out.println("Introduce cuatro palabras separadas por espacios");
+                frase=sc.nextLine();
+                try{
+                    codigoSecreto = Validaciones.control(frase);
+                }catch (Exception e){
+                    System.out.println(e.getMessage());;
+                    continue;
+                }
+                break;
+            }while(true);
+            if(gc.buscarCliente(email, dni)){
+                usuarioIncorrecto = true;
+                System.out.println("Cliente ya existente");
+                System.out.println("¿Desea volver a realizar el formulario?(s/n)");
+                volverARealizarRegistro = sc.nextLine().equals("s");
             }
-            break;
-        }while(true);
+        }while(volverARealizarRegistro);
+        if(usuarioIncorrecto){
+            throw new InvalidUserException("Usuario inválido");
+        }
+        //Una vez verifica que el usuario es correcto, se imprimen sus datos de inicio de sesión
         System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
                 "email: "+email+"\n" +
                 "Codigo Secreto: "+codigoSecreto);
-        Object[] usuarioYCliente = {new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, codigoSecreto), new Usuario(nombreUsuario, codigoSecreto, email, false)};
-        return usuarioYCliente;
+        return new Cliente (nombre, apellidos, email, telefono, dni, fechaNacimiento, nombreUsuario, codigoSecreto);
     }
 
     /**
@@ -152,7 +164,7 @@ public class ClienteView {
         Scanner sc = new Scanner(System.in);
         do {
             System.out.println("""
-					Selecciones una de las siguientes opciones
+					Seleccione una de las siguientes opciones
 					0. Salir
 					1. Registrar un usuario
 					2. Iniciar Sesión""");
@@ -163,7 +175,6 @@ public class ClienteView {
                 sc.nextLine();
             }
         }while(opcion!=1 && opcion != 2 && opcion != 0);
-        sc.close();
         return opcion;
     }
 
@@ -421,7 +432,8 @@ public class ClienteView {
         else if(respuesta.equals("0")) System.out.println("Saliendo");
     }
 
-    public static void imprimirFactura(Reservas reserva, Cliente cliente){
+    public static void imprimirFactura(Reservas reserva, Cliente cliente, ArrayList<Habitacion> habitaciones){
+        //TODO poner en el main que cuando el pago haya sido efectuado, se agregen a la habitacion las fechas ocupadas
         cliente.infoBasica();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
@@ -431,7 +443,6 @@ public class ClienteView {
             for(Habitacion h : habitaciones){
                 if(h.getId()==x){
                     System.out.println("Habitacion "+h.getNombre()+" para "+h.getMax_personas());
-                    h.setFechasOcupadas(fechaEntrada+":"+fechaSalida);
                     precioTotalReserva+=h.getPrecio();
                 }
             }

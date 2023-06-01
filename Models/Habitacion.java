@@ -1,4 +1,5 @@
 package Models;
+import Controllers.GestorHabitaciones;
 import Exceptions.InvalidDateFormatException;
 
 import java.time.LocalDate;
@@ -91,6 +92,29 @@ public class Habitacion {
 	public void setFechasOcupadas(LocalDate fechaEntrada, LocalDate fechaSalida) {
 		LocalDate[] rangoFechas = {fechaEntrada, fechaSalida};
 		fechasOcupadas.add(rangoFechas);
+	}
+
+	/**
+	 * Comprueba si una habitacion existe en el listado de habitaciones
+	 * @param id
+	 * @param gh
+	 * @return false si habitacion esta en el listado, true si habitacion no esta en el listado
+	 */
+	public static boolean comprobarHabitacion(int id, GestorHabitaciones gh){
+		for(Habitacion h : gh.getHabitaciones()){
+			if(h.getId()==id){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void mostrarHabitacion(){
+		System.out.println("1. Nombre: "+nombre);
+		System.out.println("2. Descripcion: "+descripcion);
+		System.out.println("3. Número de camas: "+num_camas);
+		System.out.println("4. Número máximo de personas"+max_personas);
+		System.out.println("5. Precio: "+precio);
 	}
 
 	@Override

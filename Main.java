@@ -1,92 +1,70 @@
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import Views.ClienteView;
+import Exceptions.ClientAddedBeforeException;
+import Exceptions.InvalidUserException;
+import Exceptions.OptionOutOfRangeException;
+import Views.AdminView;
+import Views.UserView;
 
 import Controllers.GestorClientes;
 import Models.*;
 
 public class Main {
-	public static final float IVA = 0.21f;
+
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		String opcion="";
-		int hola = sc.nextInt();
-		//Views.ClienteView.menuCliente();
-		ArrayList<Cliente> clientes = new ArrayList<>();
-		clientes.add(new Cliente("Antonio", "Box Sanchez", "antonioboxsanchez@gmail.com", "693810626", "29594264A", "07/04/2004", "PPPP78"));
-		Cliente cliente = new Cliente();
-
-		boolean usuarioLogueado=false;
-		ClienteView.menuRegistroCliente().getNombre();
-
-		System.out.println("Bienvenido a Antonio DREAMS");
-		//TODO trasladar los menús a métodos en sus clases respectivas
-		ClienteView.menuInicio();
-		if(opcion.equals("1")){
-
-			System.out.println("¿Deseas iniciar sesión?(S/N): ");
-			opcion=sc.nextLine();
-			if(opcion.equals("S")||opcion.equals("s")) opcion="2";
-			else System.out.println("Finalizando...");
+		GestorClientes gc = new GestorClientes();
+		try{
+			gc.cargarBaseDeDatos();
+		}catch(Exception e){
+			System.out.println(e.getMessage());
 		}
 
-
-		while(opcion.equals("2")){
-
-			//TODO seguir implementando en el view
-			ArrayList<Cliente> clientes = gc.getListadoClientes();
-			for(Cliente cliente_ : clientes){
-				if(cliente_.getEmail().equals(email) && cliente_.getCodigoAcceso().equals(frase)){
-					cliente = cliente_;
-				}
-			}
-			for(Cliente c : clientes){
-				if(c.getEmail().equals(email) && c.getCodigoAcceso().equals(frase)){
-					System.out.println("Bienvenido, "+c.getNombre());
-					usuarioLogueado=true;
-					opcion="";
-				}
-			}
-			if(!usuarioLogueado){
-				System.out.println("No se ha encontrado ningún usuario que coincida, ¿desea seguir intentándolo?(S/N): ");
-				opcion = sc.nextLine();
-				if(opcion.equals("S") || opcion.equals("s")) opcion="2";
-				else{
-					opcion="";
-					System.out.println("Saliendo...");
-				}
-			}
+		try{
+			gc.cargarBaseDeDatos();
+		}catch(Exception e){
+			System.out.println("Se ha producido un error crítico, vuelva a intentarlo más tarde");
 		}
-		if(usuarioLogueado) {
-			String personasReserva = "", fechaEntrada = "", fechaSalida = "";
-			String opcionHabitacion = "";
-			do {
-
-				opcionHabitacion = sc.nextLine();
-			} while (!opcionHabitacion.equals("1") && !opcionHabitacion.equals("2") && !opcionHabitacion.equals("0"));
-
-			if (opcionHabitacion.equals("1")) {
-
-				boolean pagoRealizado = false;
-				if(habitacionCorrecta){
-					String metodoPago = "";
-
-					if(metodoPago.equals("1")){
-
+		int opcionMenuInicio=-1;
+		do{
+			opcionMenuInicio = UserView.menuInicio();
+			if(opcionMenuInicio==1){
+				try{
+					Cliente cliente = UserView.menuRegistroCliente(gc);
+					gc.agregarCliente(cliente);
+				}catch(InvalidUserException | ClientAddedBeforeException e){
+					System.out.println("Ha habido un problema al insertar al cliente. Si sigue teniendo problemas, consulte con el administrador");
+				}
+			}else if(opcionMenuInicio==2){
+				Cliente c = UserView.menuInicioSesion(gc);
+				if(c!=null && !c.isRol()){
+					int opcionMenuCliente=-1;
+					do{
+						try{
+							opcionMenuCliente = UserView.menuCliente();
+						}catch(OptionOutOfRangeException e){
+							System.out.println("No se acepta esa opción");
+						}
+					}while(opcionMenuCliente!=0);
+				}else if(c!=null && c.isRol()){
+					int opcionAdmin = AdminView.menuAdmin();
+					switch (opcionAdmin){
+						case 1:
+							AdminView.menuGestionClientes(gc);
+							break;
+						case 2:
+							//Gestionar habitaciones
+							break;
+						case 3:
+							//Gestionar reservas
+						case 4:
+							//Volver al menú anterior
+						case 0:
+							//Salir del programa
 					}
-					else if(metodoPago.equals("2")){
-
-					}
+				}else{
+					System.out.println("No se ha podido iniciar sesión");
 				}
-				if(pagoRealizado){
-					Reservas reserva = new Reservas((int)(Math.random()*1000+1), cliente.getDni(), Habitacion.getIdsListado(opcionesHabitacion.get(Integer.parseInt(opcionHabitacion))), fechaEntrada, fechaSalida);
-					//Imprimir factura
-				}
+			}else if(opcionMenuInicio==3){
+				System.out.println("Un placer");
 			}
-			else if(opcionHabitacion.equals("2")){
-
-			}
-		}
+		}while(opcionMenuInicio!=0);
 	}
 }

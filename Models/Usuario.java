@@ -11,6 +11,7 @@ public class Usuario {
     private String nombreUsuario;
     private String password;
     private String email;
+    private String notificaciones;
     private boolean rol;
 
     //TODO Preguntar si un cliente debe de tener un usuario si o si o si este se puede agregar más tarde
@@ -45,6 +46,14 @@ public class Usuario {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getNotificaciones() {
+        return notificaciones;
+    }
+
+    public void setNotificaciones(String notificaciones) {
+        this.notificaciones = notificaciones;
     }
 
     public boolean isRol() {
