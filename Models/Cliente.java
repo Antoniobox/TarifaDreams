@@ -1,10 +1,13 @@
 package Models;
+
+import java.io.Serializable;
+
 /**
  * @author Antoniobox
  * @version 1.0
  * @since 18/02/2023
  */
-public class Cliente extends Usuario{
+public class Cliente extends Usuario implements Serializable {
 	private String nombre;
 	private String apellidos;
 	private String email;
@@ -16,8 +19,8 @@ public class Cliente extends Usuario{
 	public Cliente() {
 	}
 
-	public Cliente(String nombre, String apellidos, String email, String telefono, String dni, String fechaNacimiento, String nombreUsuario, String codigoAcceso) {
-		super(nombreUsuario, codigoAcceso, email, true);
+	public Cliente(String nombre, String apellidos, String email, String telefono, String dni, String fechaNacimiento, String nombreUsuario, String codigoAcceso, boolean rol) {
+		super(nombreUsuario, codigoAcceso, email, rol);
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
@@ -90,7 +93,7 @@ public class Cliente extends Usuario{
 	}
 
 	public String formatearObjeto(){
-		return nombre + ";"+ apellidos + ";" + email + ";" + telefono + ";" + dni + ";" + fechaNacimiento + ";" + codigoAcceso + "\n";
+		return nombre + ";"+ apellidos + ";" + email + ";" + telefono + ";" + dni + ";" + fechaNacimiento + ";" + fechaNacimiento + ";" + codigoAcceso + ";" + (isRol() ?"true":"false") + "\n";
 	}
 
 	@Override

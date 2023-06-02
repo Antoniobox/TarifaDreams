@@ -1,5 +1,9 @@
 package Models;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+
 /**
  * Clase Usuario
  *
@@ -7,14 +11,13 @@ package Models;
  * @since 2023/04/17
  * @version 1.0
  */
-public class Usuario {
+public class Usuario implements Serializable {
     private String nombreUsuario;
     private String password;
     private String email;
     private String notificaciones;
     private boolean rol;
 
-    //TODO Preguntar si un cliente debe de tener un usuario si o si o si este se puede agregar más tarde
     Usuario(){}
 
     public Usuario(String nombreUsuario, String password, String email, boolean rol) {
@@ -63,4 +66,5 @@ public class Usuario {
     public void setRol(boolean rol) {
         this.rol = rol;
     }
+
 }

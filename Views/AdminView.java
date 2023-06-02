@@ -2,6 +2,7 @@ package Views;
 
 import Controllers.GestorClientes;
 import Controllers.GestorHabitaciones;
+import Controllers.GestorReservas;
 import Exceptions.EmptyArrayListException;
 import Exceptions.InvalidUserException;
 import Models.Habitacion;
@@ -31,10 +32,13 @@ public class AdminView {
             try{
                 opcion = sc.nextInt();
             }catch(InputMismatchException e){
-                System.out.println("Seleccione una opción numérica");
+                opcion = -1;
             }
             if(opcion<0 || opcion > 4){
                 System.out.println("Seleccione una opción válida");
+                opcion = -1;
+                System.out.println("Presione Enter para continuar");
+                sc.nextLine();
             }
         }while(opcion<0 || opcion > 4);
         return opcion;
@@ -49,19 +53,24 @@ public class AdminView {
         System.out.println("----------REGISTRO HABITACIONES----------");
         do{
             try{
+                System.out.println("Introduce el ID de la habitación(el número identificativo):");
                 id = sc.nextInt();
-                if(Habitacion.comprobarHabitacion(id, gh)){
+                if(!Habitacion.comprobarHabitacion(id, gh)){
                     System.out.println("Habitacion ya existente");
+                    sc.nextLine();
                     continue;
                 }
             }catch(InputMismatchException e){
                 System.out.println(e.getMessage());
+                sc.nextLine();
                 continue;
             }
             break;
         }while(true);
 
         do{
+            System.out.println("Introduce el nombre de la habitación");
+            sc.nextLine();
             nombre = sc.nextLine();
             if(nombre.length() < 0){
                 System.out.println("Nombre vacio");
@@ -71,6 +80,7 @@ public class AdminView {
         }while(true);
 
         do{
+            System.out.println("Introduce la descripción de la habitación");
             descripcion = sc.nextLine();
             if(descripcion.length() < 0){
                 System.out.println("Nombre vacio");
@@ -81,13 +91,17 @@ public class AdminView {
 
         do{
             try{
+                System.out.println("Introduce el número de camas");
+                sc.nextLine();
                 num_camas = sc.nextInt();
                 if(num_camas < 1){
                     System.out.println("Más de 0 habitaciones a ser posible");
+                    sc.nextLine();
                     continue;
                 }
             }catch(InputMismatchException e){
                 System.out.println("Formato numérico por dios");
+                sc.nextLine();
                 continue;
             }
             break;
@@ -95,13 +109,17 @@ public class AdminView {
 
         do{
             try{
+                System.out.println("Introduce el máximo número de personas");
+                sc.nextLine();
                 max_personas = sc.nextInt();
                 if(max_personas < 1){
                     System.out.println("Más de 0 habitaciones a ser posible");
+                    sc.nextLine();
                     continue;
                 }
             }catch(InputMismatchException e){
                 System.out.println("Formato numérico por dios");
+                sc.nextLine();
                 continue;
             }
             break;
@@ -109,12 +127,16 @@ public class AdminView {
 
         do{
             try{
+                System.out.println("Introduce el precio de la habitación");
+                sc.nextLine();
                 precio = sc.nextFloat();
             }catch(InputMismatchException e){
                 System.out.println("Precio inválido");
+                sc.nextLine();
             }
             if(precio<0.0f){
                 System.out.println("El precio es incorrecto");
+                sc.nextLine();
             }
         }while(precio < 0.0f);
 
@@ -135,9 +157,9 @@ public class AdminView {
             try{
                 opcion = sc.nextInt();
             }catch(InputMismatchException e){
+                sc.nextLine();
                 opcion = -1;
             }
-
             switch (opcion) {
                 case 1:
                     try{
@@ -156,6 +178,7 @@ public class AdminView {
                         break;
                     }catch(Exception e){
                         System.out.println(e.getMessage());
+                        opcion = -1;
                     }
 
                 case 4:
@@ -170,8 +193,11 @@ public class AdminView {
                     break;
                 default:
                     System.out.println("Opción inválida, intente de nuevo");
+                    opcion = -1;
             }
         } while (opcion != 5);
+
+
     }
 
     public static void menuGestionHabitaciones(GestorHabitaciones gh){
@@ -189,6 +215,7 @@ public class AdminView {
             try{
                 opcion = sc.nextInt();
             }catch(InputMismatchException e){
+                sc.nextLine();
                 opcion = -1;
             }
 
@@ -210,7 +237,7 @@ public class AdminView {
                     break;
                 case 3:
                     try{
-                        gh.actualizarCliente();
+                        gh.actualizarHabitacion();
                         break;
                     }catch(Exception e){
                         System.out.println(e.getMessage());
@@ -218,13 +245,53 @@ public class AdminView {
 
                 case 4:
                     try{
-                        gh.eliminarCliente();
+                        gh.eliminarHabitacion();
                     }catch(Exception e){
                         System.out.println(e.getMessage());
                     }
                     break;
                 case 5:
                     System.out.println("Regresando al menú anterior...");
+                    break;
+                default:
+                    System.out.println("Opción inválida, intente de nuevo");
+            }
+        } while (opcion != 5);
+    }
+
+    public static void menuGestionReservas(GestorReservas gr){
+        Scanner sc = new Scanner(System.in);
+        int opcion = -1;
+        do {
+            System.out.println("------ MENÚ DE GESTIÓN DE RESERVAS ------");
+            System.out.println("1. Consultar habitacion");
+            System.out.println("2. Eliminar habitacion");
+            System.out.println("3. Regresar al menú anterior");
+            System.out.print("Elija una opción: ");
+
+            try{
+                opcion = sc.nextInt();
+            }catch(InputMismatchException e){
+                sc.nextLine();
+                opcion = -1;
+            }
+
+            switch (opcion) {
+                case 1:
+                    try{
+                        gr.mostrarReservas();
+                    }catch(Exception e){
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 2:
+                    try{
+                        gr.mostrarReservas();
+                    }catch(EmptyArrayListException e){
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 3:
                     break;
                 default:
                     System.out.println("Opción inválida, intente de nuevo");

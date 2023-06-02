@@ -1,14 +1,27 @@
 package Models;
+import Controllers.GestorHabitaciones;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class Reservas {
+public class Reservas implements Serializable {
 	private int cod;
 	private String id_cliente;
 	private ArrayList<Integer> id_habitacion;
 
 	private LocalDate fecha_entrada;
 	private LocalDate fecha_salida;
+
+	private boolean pagada;
+
+	public boolean isPagada() {
+		return pagada;
+	}
+
+	public void setPagada(boolean pagada) {
+		this.pagada = pagada;
+	}
 
 	public int getCod() {
 		return cod;
@@ -58,7 +71,17 @@ public class Reservas {
 		this.fecha_salida = fecha_salida;
 	}
 
-	public static void mostrarCalendarioReservas(){
-		
+	public void mostrarDatos(){
+		GestorHabitaciones gh = new GestorHabitaciones();
+		System.out.println("Código: "+cod);
+		System.out.println("Cliente: "+id_cliente);
+		for(int id : id_habitacion){
+			Habitacion habitacion = gh.buscarHabitacion(id);
+			if(habitacion!=null){
+				habitacion.mostrarHabitacion();
+			}
+		}
+		System.out.println("Fecha entrada: " + fecha_entrada.toString());
+		System.out.println("Fecha salida: " + fecha_salida.toString());
 	}
 }

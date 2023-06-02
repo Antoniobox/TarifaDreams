@@ -3,9 +3,7 @@ package Controllers;
 import Exceptions.EmptyArrayListException;
 import Exceptions.OptionOutOfRangeException;
 import Interfaces.CRUD;
-import Models.Cliente;
 import Models.Habitacion;
-import Utils.Validaciones;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -22,7 +20,7 @@ import java.util.Scanner;
  */
 public class GestorHabitaciones implements CRUD {
     ArrayList<Habitacion> habitaciones = new ArrayList<>();
-    public static final String DB_HABITACIONES = "Data/habitaciones";
+    public static final String DB_HABITACIONES = "Data/habitaciones.dat";
 
     public GestorHabitaciones(){}
 
@@ -47,6 +45,20 @@ public class GestorHabitaciones implements CRUD {
         this.habitaciones = habitaciones;
     }
 
+    /**
+     * Busca en base a la clave primaria una habitacion en el listado de habitaciones.
+     * @param id id de la habitación que se desea buscar
+     * @return Devuelve la habitacion en caso de encontrarla, null en caso de no encontrarla
+     */
+    public Habitacion buscarHabitacion(int id){
+        for(Habitacion h : habitaciones){
+            if(h.getId()==id){
+                return h;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Agrega una habitación a la lista de habitaciones
@@ -61,25 +73,16 @@ public class GestorHabitaciones implements CRUD {
      * @throws IOException
      */
     @Override
-    public void cargarBaseDeDatos() throws IOException {
-        FileReader fr = new FileReader(DB_HABITACIONES);
-        BufferedReader br = new BufferedReader(fr);
-
-        String linea;
-        String[] registro;
-
-        while((linea=br.readLine())!=null){
-            registro = linea.split(";");
-            int id, num_camas, max_personas;
-            String nombre, descripcion, fechasOcupadas;
-            double precio;
-            id = Integer.parseInt(registro[0]);
-            nombre = registro[1];
-            descripcion = registro[2];
-            num_camas = Integer.parseInt(registro[3]);
-            max_personas = Integer.parseInt(registro[4]);
-            precio = Double.parseDouble(registro[5]);
-            habitaciones.add(new Habitacion(id, nombre, descripcion, num_camas, max_personas, precio));
+    public void cargarBaseDeDatos() {
+        try {
+            FileInputStream fileIn = new FileInputStream(DB_HABITACIONES);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            habitaciones = (ArrayList<Habitacion>) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Los registros de habitaciones se han cargado exitosamente.");
+        } catch (Exception e) {
+            System.out.println("Error al cargar los registros de habitaciones: " + e.getMessage());
         }
     }
 
@@ -89,16 +92,17 @@ public class GestorHabitaciones implements CRUD {
      * @throws EmptyArrayListException
      */
     @Override
-    public void guardarRegistros() throws IOException, EmptyArrayListException {
-        FileWriter fw = new FileWriter(DB_HABITACIONES, false);
-        if(habitaciones.size() > 0){
-            for(Habitacion h : habitaciones){
-                fw.write(h.formatearObjeto());
-            }
-        } else{
-            throw new EmptyArrayListException("No se puede guardar el listado de habitaciones (no existen habitaciones)");
+    public void guardarRegistros() {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(DB_HABITACIONES);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(habitaciones);
+            out.close();
+            fileOut.close();
+            System.out.println("Los registros de habitaciones se han guardado exitosamente.");
+        } catch (IOException e) {
+            System.out.println("Error al guardar los registros de habitaciones: " + e.getMessage());
         }
-        fw.close();
     }
 
     public void mostrarHabitaciones() throws EmptyArrayListException {
@@ -118,7 +122,7 @@ public class GestorHabitaciones implements CRUD {
         int opcion = -1;
         do {
             mostrarHabitaciones();
-            System.out.println("Seleccione un cliente: ");
+            System.out.println("Seleccione un habitación: ");
             try {
                 opcion = sc.nextInt();
             } catch (InputMismatchException e) {
@@ -201,5 +205,35 @@ public class GestorHabitaciones implements CRUD {
             String opcionContinuarEditando = sc.nextLine();
             continuarEditando = opcionContinuarEditando.equals("S") || opcionContinuarEditando.equals("s");
         } while (opcion < 1 || opcion > 5 || continuarEditando);
+        try{
+            guardarRegistros();
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void eliminarHabitacion() throws OptionOutOfRangeException {
+        int opcion = -1;
+        Scanner sc = new Scanner(System.in);
+        do{
+            try{
+                mostrarHabitaciones();
+
+                System.out.println("Seleccione una habitación: ");
+                try {
+                    opcion = sc.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Introduzca una opción numérica");
+                    opcion = -1;
+                }
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+            if (opcion >= habitaciones.size() || opcion < 0) {
+                throw new OptionOutOfRangeException("No se permite modificar habitaciones inexistentes (que me llamen loco)");
+            }
+        }while(opcion < 0 || opcion >= habitaciones.size());
+        habitaciones.remove(opcion);
+        System.out.println("Habitación eliminada exitosamente");
     }
 }

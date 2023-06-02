@@ -1,8 +1,5 @@
 package Controllers;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -13,10 +10,7 @@ import Exceptions.OptionOutOfRangeException;
 import Interfaces.CRUD;
 import Exceptions.ClientAddedBeforeException;
 import Models.Cliente;
-import Models.Habitacion;
 import Utils.Validaciones;
-
-import javax.swing.text.html.Option;
 
 public class GestorClientes implements CRUD {
 	public static final String DB_CLIENTES = "Data/clientes.dat";
@@ -54,7 +48,7 @@ public class GestorClientes implements CRUD {
 							". Email:" + cliente.getEmail() + "\n" +
 							". Teléfono:" + cliente.getTelefono() + "\n" +
 							". Fecha de nacimiento:" + cliente.getFechaNacimiento() + "\n" +
-							"Nombre de usuario:" + cliente.getNombreUsuario() + "\n"
+							". Nombre de usuario:" + cliente.getNombreUsuario() + "\n"
 			);
 		}
 	}
@@ -126,43 +120,31 @@ public class GestorClientes implements CRUD {
 	}
 
 	@Override
-	public void cargarBaseDeDatos() throws IOException, InvalidNumberOfFieldsException {
-		FileReader fr = new FileReader(DB_CLIENTES);
-		BufferedReader br = new BufferedReader(fr);
-
-		String linea;
-		String[] registro;
-
-		while ((linea = br.readLine()) != null) {
-			registro = linea.split(";");
-			String nombre, apellidos, email, telefono, dni, fechaNacimiento, nombreUsuario, codigoAcceso;
-			if (registro.length == 8) {
-				nombre = registro[0];
-				apellidos = registro[1];
-				email = registro[2];
-				telefono = registro[3];
-				dni = registro[4];
-				fechaNacimiento = registro[5];
-				nombreUsuario = registro[6];
-				codigoAcceso = registro[7];
-				listadoClientes.add(new Cliente(nombre, apellidos, email, telefono, dni, fechaNacimiento, nombreUsuario, codigoAcceso));
-			} else {
-				throw new InvalidNumberOfFieldsException("Se ha detectado un error al intentar cargar el cliente");
-			}
+	public void cargarBaseDeDatos() {
+		try {
+			FileInputStream fileIn = new FileInputStream(DB_CLIENTES);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			listadoClientes = (ArrayList<Cliente>) in.readObject();
+			in.close();
+			fileIn.close();
+			System.out.println("Los registros de clientes se han cargado exitosamente.");
+		} catch (Exception e) {
+			System.out.println("Error al cargar los registros de clientes: " + e.getMessage());
 		}
 	}
 
 	@Override
-	public void guardarRegistros() throws IOException, EmptyArrayListException {
-		FileWriter fw = new FileWriter(DB_CLIENTES, false);
-		if (listadoClientes.size() > 0) {
-			for (Cliente c : listadoClientes) {
-				fw.write(c.formatearObjeto());
-			}
-		} else {
-			throw new EmptyArrayListException("No se puede guardar el listado de clientes (no existen clientes)");
+	public void guardarRegistros(){
+		try {
+			FileOutputStream fileOut = new FileOutputStream(DB_CLIENTES);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(listadoClientes);
+			out.close();
+			fileOut.close();
+			System.out.println("Los registros de clientes se han guardado exitosamente.");
+		} catch (IOException e) {
+			System.out.println("Error al guardar los registros de clientes: " + e.getMessage());
 		}
-		fw.close();
 	}
 
 	public void consultarCliente() {
@@ -212,6 +194,7 @@ public class GestorClientes implements CRUD {
 			switch (opcion) {
 				case 1:
 					System.out.println("Introduce un nuevo nombre para el usuario");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.nombreYApellidos(campo, false);
@@ -220,8 +203,10 @@ public class GestorClientes implements CRUD {
 						System.out.println(e.getMessage());
 						System.out.println("No se puede modificar el usuario");
 					}
+					break;
 				case 2:
 					System.out.println("Introduce los nuevos apellidos del cliente");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.nombreYApellidos(campo, true);
@@ -233,6 +218,7 @@ public class GestorClientes implements CRUD {
 					break;
 				case 3:
 					System.out.println("Introduce el nuevo email del cliente");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.email(campo);
@@ -244,6 +230,7 @@ public class GestorClientes implements CRUD {
 					break;
 				case 4:
 					System.out.println("Introduce un nuevo telefono para el usuario");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.telefono(campo);
@@ -252,8 +239,10 @@ public class GestorClientes implements CRUD {
 						System.out.println(e.getMessage());
 						System.out.println("No se puede modificar el usuario");
 					}
+					break;
 				case 5:
 					System.out.println("Introduce la nueva fecha de nacimiento del cliente");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.fecha(campo, false);
@@ -265,6 +254,7 @@ public class GestorClientes implements CRUD {
 					break;
 				case 6:
 					System.out.println("Introduce los nuevos apellidos del cliente");
+					sc.nextLine();
 					campo = sc.nextLine();
 					try {
 						Validaciones.nombreUsuario(campo);
@@ -276,6 +266,7 @@ public class GestorClientes implements CRUD {
 					break;
 				default:
 					System.out.println("Opción inválida");
+					break;
 			}
 			System.out.println("¿Desea seguir editando el cliente(S/N)?: ");
 			String opcionContinuarEditando = sc.nextLine();
@@ -283,6 +274,10 @@ public class GestorClientes implements CRUD {
 		} while (opcion < 1 || opcion > 7 || continuarEditando);
 	}
 
+	/**
+	 * Elimina un cliente
+	 * @throws OptionOutOfRangeException
+	 */
 	public void eliminarCliente() throws OptionOutOfRangeException{
 		int opcion = -1;
 		Scanner sc = new Scanner(System.in);

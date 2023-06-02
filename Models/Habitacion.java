@@ -2,6 +2,7 @@ package Models;
 import Controllers.GestorHabitaciones;
 import Exceptions.InvalidDateFormatException;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * @version 1.0
  * @since 18/02/2023
  */
-public class Habitacion {
+public class Habitacion implements Serializable {
 	private int id;
 	private String nombre;
 	private String descripcion;
@@ -168,7 +169,7 @@ public class Habitacion {
 		return true;
 	}
 
-	public LocalDate formatearFecha(String fecha) throws InvalidDateFormatException {
+	public static LocalDate formatearFecha(String fecha) throws InvalidDateFormatException {
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		LocalDate fechaFinal;

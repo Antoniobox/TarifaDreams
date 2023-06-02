@@ -26,8 +26,8 @@ class HabitacionTest {
 
     @Test
     void comprobarDisponibilidadHabitacion() {
-        assertTrue(h1.comprobarDisponibilidadHabitacion(LocalDate.of(2023, 5, 24), LocalDate.of(2023, 05,27)));
+        assertFalse(h1.comprobarDisponibilidadHabitacion(LocalDate.of(2023, 5, 24), LocalDate.of(2023, 05,27)));
         assertFalse(h1.comprobarDisponibilidadHabitacion(LocalDate.of(2023, 5, 23), LocalDate.of(2023, 05,27)));
-        assertTrue(h1.comprobarDisponibilidadHabitacion(LocalDate.of(2023, 06, 1), LocalDate.of(2023, 06,27)));
+        assertTrue(h1.comprobarDisponibilidadHabitacion(LocalDate.of(2023, 06, 6), LocalDate.of(2023, 06,27)));
     }
 }

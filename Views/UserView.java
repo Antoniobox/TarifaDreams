@@ -1,6 +1,7 @@
 package Views;
 
 import Controllers.GestorClientes;
+import Controllers.GestorHabitaciones;
 import Exceptions.InvalidUserException;
 import Exceptions.OptionOutOfRangeException;
 import Models.Cliente;
@@ -8,6 +9,7 @@ import Models.Habitacion;
 import Models.Reservas;
 import Utils.Validaciones;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -105,6 +107,7 @@ public class UserView {
             do{
                 System.out.println("Introduce tu dni");
                 dni=sc.nextLine();
+                dni = dni.toUpperCase();
                 try{
                     Validaciones.dni(dni);
                 }catch(Exception e){
@@ -152,7 +155,7 @@ public class UserView {
         System.out.println("Para iniciar sesión, tendrás que usar las siguientes credenciales:\n"+
                 "email: "+email+"\n" +
                 "Codigo Secreto: "+codigoSecreto);
-        return new Cliente (nombre, apellidos, email, telefono, dni, fechaNacimiento, nombreUsuario, codigoSecreto);
+        return new Cliente (nombre, apellidos, email, telefono, dni, fechaNacimiento, nombreUsuario, codigoSecreto, false);
     }
 
     /**
@@ -279,13 +282,18 @@ public class UserView {
         return pagoRealizado;
     }
 
-    public static void menuReservarHabitacion(){
+    /**
+     * Menu para que un cliente pueda reservas habitacioens
+     * @return arraylist de habitaciones en caso de que seleccione una, null en caso de lo contrario
+     */
+    public static Reservas menuReservarHabitacion(String idCliente){
         System.out.println("***********  RESERVAR HABITACIÓN  ***********");
         Scanner sc = new Scanner(System.in);
         int personasReserva=0,opcionHabitaciones=0;
         String fechaEntrada, fechaSalida;
 
-        ArrayList<Habitacion> habitaciones = new ArrayList<>();
+        GestorHabitaciones gh = new GestorHabitaciones();
+        ArrayList<Habitacion> habitaciones = gh.getHabitaciones();
         ArrayList<Habitacion> habitacionesRepetidas = new ArrayList<>();
         HashMap<Integer, String> opcionesHabitacion = new HashMap<>();
         //nOpciones determina el número de habitaciones que se muestran,
@@ -299,6 +307,7 @@ public class UserView {
             try{
                 personasReserva = sc.nextInt();
             }catch(InputMismatchException e) {
+                sc.nextLine();
                 System.out.println("Opción inválida");
             }
         } while (personasReserva<=0);
@@ -358,14 +367,15 @@ public class UserView {
             }
             if(nOpciones==0){
                 System.out.println("No se han encontrado habitaciones disponibles para esos criterios");
-                System.out.println("¿Desea seguir intentando?");
+                System.out.println("¿Desea seguir intentando?(S/N)");
+                String seguirBuscandoString=sc.nextLine();
 
-                seguirBuscando = sc.nextLine().equals("S") || sc.nextLine().equals("s");
+                seguirBuscando = seguirBuscandoString.equals("S") || seguirBuscandoString.equals("s");
 
             }
         }while(nOpciones==0 && seguirBuscando);
         boolean habitacionCorrecta = false;
-        int opcionHabitacion;
+        int opcionHabitacion = -1;
         if(nOpciones>0){
             do {
                 do {
@@ -389,6 +399,22 @@ public class UserView {
                 opcionHabitacion = habitacionCorrecta ? opcionHabitacion : -1;
             }while(opcionHabitacion==-1);
         }
+        System.out.println(opcionesHabitacion.get(opcionHabitacion));
+
+        LocalDate fechaEntradaFinal=null;
+        LocalDate fechaSalidaFinal=null;
+        try{
+            fechaEntradaFinal = Habitacion.formatearFecha(fechaEntrada);
+            fechaSalidaFinal = Habitacion.formatearFecha(fechaSalida);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        ArrayList<Integer> habitacionesFinales = new ArrayList<>();
+        for(String id: Habitacion.getIdsListado(opcionesHabitacion.get(opcionHabitacion))){
+            habitacionesFinales.add(Integer.parseInt(id));
+        }
+        return new Reservas((int)Math.random()*100, idCliente,habitacionesFinales, fechaEntradaFinal, fechaSalidaFinal);
     }
 
     public static boolean pagoBizum(){
@@ -432,18 +458,17 @@ public class UserView {
         else if(respuesta.equals("0")) System.out.println("Saliendo");
     }
 
-    public static void imprimirFactura(Reservas reserva, Cliente cliente, ArrayList<Habitacion> habitaciones){
-        //TODO poner en el main que cuando el pago haya sido efectuado, se agregen a la habitacion las fechas ocupadas
+    public static void imprimirFactura(Reservas reserva, Cliente cliente){
         cliente.infoBasica();
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
         System.out.println("Fecha de facturación: "+dtf.format(now));
         double precioTotalReserva = 0;
-        for(int x : reserva.getId_habitacion()){
-            for(Habitacion h : habitaciones){
-                if(h.getId()==x){
-                    System.out.println("Habitacion "+h.getNombre()+" para "+h.getMax_personas());
-                    precioTotalReserva+=h.getPrecio();
+        GestorHabitaciones gh = new GestorHabitaciones();
+        for(Habitacion h : gh.getHabitaciones()){
+            for(int x : reserva.getId_habitacion()){
+                if(x==h.getId()){
+                    h.mostrarHabitacion();
                 }
             }
         }
